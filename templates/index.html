@@ -1,12 +1,18 @@
 {% extends "base.html" %} {% block title %}Index{% endblock %} {%block content%}
-<form action="/" method="POST" id="searchForm">
-  {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
-  'hidden'%}
-  <div class="form-group">
-    {{field.label}} {{field}} {%if field.errors%}{%for error in
-    field.errors%}{{error}}{%endfor%}{%endif%}
-  </div>
-  {%endfor%}
-  <button>Submit</button>
-</form>
+<div>
+  <form action="/" method="POST" id="searchForm">
+    {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
+    'hidden'%}
+    <div class="form-group">
+      {{field.label}} {{field}} {%if field.errors%}{%for error in
+      field.errors%}{{error}}{%endfor%}{%endif%}
+    </div>
+    {%endfor%}
+    <button>Submit</button>
+  </form>
+</div>
+
+<div class="container" id="cardContainer"></div>
+<button id="prevPageButton">Previous Page</button>
+<button id="nextPageButton">Next Page</button>
 {%endblock%}
