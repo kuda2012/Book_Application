@@ -75,13 +75,7 @@ function addResults(items) {
         showModal(items[j]);
       });
       newColumn.setAttribute("class", "col-4");
-      id = null;
-      if (items[j].volumeInfo.industryIdentifiers) {
-        id = items[j].volumeInfo.industryIdentifiers[0].identifier;
-      } else {
-        id = items[j].id;
-      }
-      newColumn.setAttribute("id", id);
+      newColumn.setAttribute("id", items[j].id);
 
       buildCard(items[j], newColumn);
       newRow.append(newColumn);
