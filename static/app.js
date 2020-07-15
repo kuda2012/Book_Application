@@ -6,6 +6,7 @@ const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
 const cardContainer = document.getElementById("cardContainer");
 const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
+const containerUL = document.getElementById("containerUL");
 
 var currentPage = 1;
 var numberPerPage = 9;
@@ -40,6 +41,7 @@ searchForm.addEventListener("submit", async (evt) => {
   console.log(resp);
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
+  // createModal(resp.data.items);
 });
 
 function getNumberOfPages(list) {
@@ -100,6 +102,7 @@ function check() {
 
 function addResults(items) {
   cardContainer.innerHTML = "";
+  containerUL.innerHTML = "";
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
     newRow.setAttribute("class", "d-flex flex-row justify-content-center");
@@ -108,11 +111,13 @@ function addResults(items) {
         cardContainer.append(newRow);
         return;
       }
+      const newLI = document.createElement("li");
+      newLI.setAttribute("data-toggle", "modal");
+      newLI.setAttribute("data-target", "#myModal");
+      const newAnchor = document.createElement("a");
+      newAnchor.setAttribute("href", "#myGallery");
+      newAnchor.setAttribute("data-slide-to", j);
       const newColumn = document.createElement("div");
-      // newColumn.addEventListener("click", function () {
-      //   showModal(items[j]);
-      // });
-      newColumn.setAttribute("class", "col-4");
       try {
         newColumn.setAttribute(
           "data-isbn-10",
@@ -123,16 +128,18 @@ function addResults(items) {
       }
 
       newColumn.setAttribute("id", items[j].id);
-      // console.log(newColumn);
       buildCard(items[j], newColumn);
-      newRow.append(newColumn);
+      newLI.append(newAnchor);
+      newLI.append(newColumn);
+      newRow.append(newLI);
+      containerUL.append(newRow);
     }
-    cardContainer.append(newRow);
+    cardContainer.append(containerUL);
   }
 }
 
 function buildCard(cardInfo, column) {
-  column.setAttribute("class", "cards");
+  column.setAttribute("class", "cards col-sm");
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
   try {
