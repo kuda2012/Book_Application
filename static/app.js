@@ -25,7 +25,7 @@ searchForm.addEventListener("submit", async (evt) => {
   if (previewInput.value) {
     parameters["filter"] = previewInput.value;
   }
-  parameters["maxResults"] = 40;
+  parameters["maxResults"] = 15;
   resp = await axios.get(BASE_URL, {
     params: parameters,
   });
@@ -63,18 +63,28 @@ searchForm.addEventListener("submit", async (evt) => {
 
 function addResults(items) {
   cardContainer.innerHTML = "";
-  for (i = 0; i < 9; i += 3) {
+  for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
     newRow.setAttribute("class", "d-flex flex-row justify-content-between");
     for (j = i; j < i + 3; j++) {
       if (j >= items.length) {
+        cardContainer.append(newRow);
         return;
       }
       const newColumn = document.createElement("div");
-      newColumn.addEventListener("click", function () {
-        showModal(items[j]);
-      });
+      // newColumn.addEventListener("click", function () {
+      //   showModal(items[j]);
+      // });
       newColumn.setAttribute("class", "col-4");
+      try {
+        newColumn.setAttribute(
+          "data-isbn-10",
+          items[j].volumeInfo.industryIdentifiers[0].identifier
+        );
+      } catch (err) {
+        newColumn.setAttribute("data-isbn-10", "N/A");
+      }
+
       newColumn.setAttribute("id", items[j].id);
 
       buildCard(items[j], newColumn);
@@ -89,13 +99,14 @@ function buildCard(cardInfo, column) {
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
   var image_link = null;
-  if (cardInfo.volumeInfo.imageLinks) {
-    image_link = cardInfo.volumeInfo.imageLinks.smallThumbnail;
-  } else {
-    image_link =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
+  try {
+    cardImg.setAttribute("src", cardInfo.volumeInfo.imageLinks.smallThumbnail);
+  } catch (err) {
+    cardImg.setAttribute(
+      "src",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png"
+    );
   }
-  cardImg.setAttribute("src", image_link);
   cardImg.setAttribute("alt", "book picture");
   column.append(cardImg);
   const cardTitle = document.createElement("div");
