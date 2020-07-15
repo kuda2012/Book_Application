@@ -5,12 +5,14 @@ const authorInput = document.getElementById("author_filter");
 const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
 const cardContainer = document.getElementById("cardContainer");
-const nextPageButton = document.getElementById("nextPageButton");
-const prevPageButton = document.getElementById("prevPageButton");
 const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
 
+var currentPage = 1;
+var numberPerPage = 9;
+var numberOfPages = 1;
+var resp = null;
+
 searchForm.addEventListener("submit", async (evt) => {
-  offsetValue = 10;
   evt.preventDefault();
   parameters = {};
   if (searchInput.value) {
@@ -25,41 +27,73 @@ searchForm.addEventListener("submit", async (evt) => {
   if (previewInput.value) {
     parameters["filter"] = previewInput.value;
   }
-  parameters["maxResults"] = 15;
+  parameters["maxResults"] = 40;
   resp = await axios.get(BASE_URL, {
     params: parameters,
   });
   searchInput.value = "";
   console.log(resp);
-  addResults(resp.data.items.slice(0, 9));
+  numberOfPages = getNumberOfPages(resp.data.items);
+  firstPage(resp.data.items);
 
-  nextPageButton.addEventListener("click", function () {
-    console.log(offsetValue);
-    if (offsetValue == 10) {
-      addResults(resp.data.items.slice(10, 19));
-      offsetValue = offsetValue + 10;
-    } else if (offsetValue == 20) {
-      addResults(resp.data.items.slice(20, 29));
-      offsetValue = offsetValue + 10;
-    } else if (offsetValue == 30) {
-      addResults(resp.data.items.slice(30, 39));
-      offsetValue = offsetValue + 10;
-    }
-  });
-  prevPageButton.addEventListener("click", function () {
-    console.log(offsetValue);
-    if (offsetValue == 20) {
-      addResults(resp.data.items.slice(0, 9));
-      offsetValue = offsetValue - 10;
-    } else if (offsetValue == 30) {
-      addResults(resp.data.items.slice(10, 19));
-      offsetValue = offsetValue - 10;
-    } else if (offsetValue == 40) {
-      addResults(resp.data.items.slice(20, 29));
-      offsetValue = offsetValue - 10;
-    }
-  });
+  // loadList(resp.data.items);
 });
+
+function getNumberOfPages(list) {
+  return Math.ceil(list.length / numberPerPage);
+}
+
+document.getElementById("next").addEventListener("click", function () {
+  nextPage(resp.data.items);
+});
+
+document.getElementById("previous").addEventListener("click", function () {
+  previousPage(resp.data.items);
+});
+
+document.getElementById("first").addEventListener("click", function () {
+  firstPage(resp.data.items);
+});
+
+document.getElementById("last").addEventListener("click", function () {
+  lastPage(resp.data.items);
+});
+
+function nextPage(items) {
+  currentPage += 1;
+  loadList(items);
+}
+
+function previousPage(items) {
+  currentPage -= 1;
+  loadList(items);
+}
+
+function firstPage(items) {
+  currentPage = 1;
+  loadList(items);
+}
+
+function lastPage(items) {
+  currentPage = numberOfPages;
+  loadList(items);
+}
+
+function loadList(items) {
+  var begin = (currentPage - 1) * numberPerPage;
+  var end = begin + numberPerPage;
+  addResults(items.slice(begin, end));
+  check(); // determines the states of the pagination buttons
+}
+function check() {
+  document.getElementById("next").disabled =
+    currentPage == numberOfPages ? true : false;
+  document.getElementById("previous").disabled =
+    currentPage == 1 ? true : false;
+  document.getElementById("first").disabled = currentPage == 1 ? true : false;
+  document.getElementById("last").disabled =
+    currentPage == numberOfPages ? true : false;
+}
 
 function addResults(items) {
   cardContainer.innerHTML = "";
@@ -86,7 +120,7 @@ function addResults(items) {
       }
 
       newColumn.setAttribute("id", items[j].id);
-
+      // console.log(newColumn);
       buildCard(items[j], newColumn);
       newRow.append(newColumn);
     }
@@ -98,7 +132,6 @@ function buildCard(cardInfo, column) {
   column.setAttribute("class", "cards");
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
-  var image_link = null;
   try {
     cardImg.setAttribute("src", cardInfo.volumeInfo.imageLinks.smallThumbnail);
   } catch (err) {
