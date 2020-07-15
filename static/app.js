@@ -99,7 +99,7 @@ function addResults(items) {
   cardContainer.innerHTML = "";
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
-    newRow.setAttribute("class", "d-flex flex-row justify-content-between");
+    newRow.setAttribute("class", "d-flex flex-row justify-content-center");
     for (j = i; j < i + 3; j++) {
       if (j >= items.length) {
         cardContainer.append(newRow);
