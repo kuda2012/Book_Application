@@ -31,12 +31,15 @@ searchForm.addEventListener("submit", async (evt) => {
   resp = await axios.get(BASE_URL, {
     params: parameters,
   });
+  if (resp.data.items == null) {
+    alert("Could not find any results, try a different entry");
+    searchInput.value = "";
+    return;
+  }
   searchInput.value = "";
   console.log(resp);
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
-
-  // loadList(resp.data.items);
 });
 
 function getNumberOfPages(list) {
@@ -146,38 +149,3 @@ function buildCard(cardInfo, column) {
   cardTitle.innerText = cardInfo.volumeInfo.title;
   column.append(cardTitle);
 }
-
-// var offsetValue = 0;
-
-// function paginator(resp) {
-//   console.log(resp.data.items);
-//   nextPageButton.addEventListener("click", async (evt) => {
-//     if (offsetValue < resp.data.items.length) {
-//       offsetValue = offsetValue + 9;
-//       // if (offsetValue > resp.data.items.length) {
-//       //   offsetValue =
-//       // }
-//       console.log(offsetValue);
-//       resp.config.params["startIndex"] = offsetValue;
-//       resp.config.params["maxResults"] = 10;
-//       new_resp = await axios.get(BASE_URL, {
-//         params: resp.config.params,
-//       });
-//       console.log(new_resp);
-//       addResults(new_resp.data.items);
-//     }
-//   });
-
-//   prevPageButton.addEventListener("click", async (evt) => {
-//     if (offsetValue > 0) {
-//       offsetValue = offsetValue - 9;
-//       console.log(offsetValue);
-//       resp.config.params["startIndex"] = offsetValue;
-//       resp.config.params["maxResults"] = 10;
-//       new_resp = await axios.get(BASE_URL, {
-//         params: resp.config.params,
-//       });
-//       addResults(new_resp.data.items);
-//     }
-//   });
-// }
