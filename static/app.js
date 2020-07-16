@@ -119,20 +119,20 @@ function addResults(items) {
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
-      const internalCard = document.createElement("div");
+      const bookCard = document.createElement("div");
       try {
-        internalCard.setAttribute(
+        bookCard.setAttribute(
           "data-isbn-10",
           items[j].volumeInfo.industryIdentifiers[0].identifier
         );
       } catch (err) {
-        internalCard.setAttribute("data-isbn-10", "N/A");
+        bookCard.setAttribute("data-isbn-10", "N/A");
       }
 
-      internalCard.setAttribute("id", items[j].id);
-      buildCard(items[j], internalCard);
+      bookCard.setAttribute("id", items[j].id);
+      buildCard(items[j], bookCard);
       newLI.append(newAnchor);
-      newLI.append(internalCard);
+      newLI.append(bookCard);
       newColumn.append(newLI);
       newRow.append(newColumn);
       containerUL.append(newRow);
