@@ -111,27 +111,30 @@ function addResults(items) {
         cardContainer.append(newRow);
         return;
       }
+      const newColumn = document.createElement("div");
+      newColumn.setAttribute("class", "col-sm");
       const newLI = document.createElement("li");
       newLI.setAttribute("data-toggle", "modal");
       newLI.setAttribute("data-target", "#myModal");
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
-      const newColumn = document.createElement("div");
+      const bookCard = document.createElement("div");
       try {
-        newColumn.setAttribute(
+        bookCard.setAttribute(
           "data-isbn-10",
           items[j].volumeInfo.industryIdentifiers[0].identifier
         );
       } catch (err) {
-        newColumn.setAttribute("data-isbn-10", "N/A");
+        bookCard.setAttribute("data-isbn-10", "N/A");
       }
 
-      newColumn.setAttribute("id", items[j].id);
-      buildCard(items[j], newColumn);
+      bookCard.setAttribute("id", items[j].id);
+      buildCard(items[j], bookCard);
       newLI.append(newAnchor);
-      newLI.append(newColumn);
-      newRow.append(newLI);
+      newLI.append(bookCard);
+      newColumn.append(newLI);
+      newRow.append(newColumn);
       containerUL.append(newRow);
     }
     cardContainer.append(containerUL);
@@ -139,7 +142,7 @@ function addResults(items) {
 }
 
 function buildCard(cardInfo, column) {
-  column.setAttribute("class", "cards col-sm");
+  column.setAttribute("class", "cards");
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
   try {
