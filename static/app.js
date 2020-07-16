@@ -4,7 +4,7 @@ const categoryInput = document.getElementById("categories_filter");
 const authorInput = document.getElementById("author_filter");
 const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
-const cardContainer = document.getElementById("cardContainer");
+const cardContainer = $("#cardContainer");
 const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
 const containerUL = document.getElementById("containerUL");
 
@@ -103,6 +103,10 @@ function check() {
 function addResults(items) {
   cardContainer.innerHTML = "";
   containerUL.innerHTML = "";
+
+  if (document.getElementById("myModal")) {
+    document.getElementById("myModal").remove();
+  }
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
     newRow.setAttribute("class", "d-flex flex-row justify-content-center");
@@ -139,6 +143,8 @@ function addResults(items) {
     }
     cardContainer.append(containerUL);
   }
+  const modal = appendModal(items);
+  cardContainer.append(modal);
 }
 
 function buildCard(cardInfo, column) {
@@ -158,4 +164,101 @@ function buildCard(cardInfo, column) {
   const cardTitle = document.createElement("div");
   cardTitle.innerText = cardInfo.volumeInfo.title;
   column.append(cardTitle);
+  return column;
+}
+
+function appendModal(items) {
+  const holder = document.createElement("div");
+  holder.setAttribute("id", "holder");
+
+  for (let i = 0; i < items.length; i++) {
+    const carouselDiv = document.createElement("div");
+    if (items[0]) {
+      carouselDiv.setAttribute("class", "item active");
+    } else {
+      carouselDiv.setAttribute("class", "item");
+    }
+    const image = document.createElement("img");
+    try {
+      image.setAttribute("src", items[i].volumeInfo.imageLinks.smallThumbnail);
+    } catch (err) {
+      image.setAttribute(
+        "src",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png"
+      );
+    }
+    image.setAttribute("alt", `item${i}`);
+    const carouselCaption = document.createElement("div");
+    carouselDiv.setAttribute("class", "carousel-caption");
+    const carouselTitle = document.createElement("h3");
+    carouselTitle.innerText = items[i].volumeInfo.title;
+    const carouselDescription = document.createElement("p");
+    carouselDescription.innerText = items[i].volumeInfo.description;
+    holder.append(carouselDiv);
+    holder.append(image);
+    holder.append(carouselCaption);
+    carouselCaption.append(carouselTitle);
+    carouselCaption.append(carouselDescription);
+  }
+
+  const $modalMarkup = $(`<!--begin modal window-->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="pull-left">My Gallery Title</div>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            title="Close"
+          >
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!--CAROUSEL CODE GOES HERE-->
+          <!--begin carousel-->
+          <div id="myGallery" class="carousel slide" data-interval="false">
+            <div class="carousel-inner" id = "carouselInner">
+              ${holder.innerHTML}
+              <!--end carousel-inner-->
+            </div>
+            <!--Begin Previous and Next buttons-->
+            <a
+              class="left carousel-control"
+              href="#myGallery"
+              role="button"
+              data-slide="prev"
+            >
+              <span class="glyphicon glyphicon-chevron-left"></span
+            ></a>
+            <a
+              class="right carousel-control"
+              href="#myGallery"
+              role="button"
+              data-slide="next"
+            >
+              <span class="glyphicon glyphicon-chevron-right"></span
+            ></a>
+            <!--end carousel-->
+          </div>
+          <!--end modal-body-->
+        </div>
+        <div class="modal-footer">
+          <div class="pull-left">
+          </div>
+          <button class="btn-sm close" type="button" data-dismiss="modal">
+            Close
+          </button>
+          <!--end modal-footer-->
+        </div>
+        <!--end modal-content-->
+      </div>
+      <!--end modal-dialoge-->
+    </div>
+    <!--end myModal-->>
+  </div>`);
+
+  return $modalMarkup;
 }
