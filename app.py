@@ -11,7 +11,6 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 BASE_URL = "https://www.googleapis.com/books/v1/volumes?"
 
-print("hi")
 
 @app.route("/")
 def homepage():
