@@ -225,7 +225,7 @@ function appendModal(items) {
 function addCarousel(items) {
   const holder = $(`#carouselInner`);
 
-  const info = $(`<div class="item active"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" class = "modalImages" alt="item0">
+  const info = $(`<div class="item active"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item0">
 <div class="carousel-caption">
 <h3>${items[0].volumeInfo.title}</h3>
 <p>${items[0].volumeInfo.description}</p>
@@ -233,43 +233,4 @@ function addCarousel(items) {
 </div>
 `);
   holder.append(info);
-  const info2 = $(`<div class="item"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" class = "modalImages" alt="item1">
-<div class="carousel-caption">
-<h3>${items[1].volumeInfo.title}</h3>
-<p>${items[1].volumeInfo.description}</p>
-</div>
-</div>
-`);
-  holder.append(info2);
-
-  // for (let i = 0; i < items.length; i++) {
-  //   const carouselDiv = document.createElement("div");
-  //   // if (items[i] == items[0]) {
-  //   //   carouselDiv.setAttribute("class", "item active");
-  //   // } else {
-  //   //   carouselDiv.setAttribute("class", "item");
-  //   // }
-  //   const image = document.createElement("img");
-  //   try {
-  //     image.setAttribute("src", items[i].volumeInfo.imageLinks.smallThumbnail);
-  //   } catch (err) {
-  //     image.setAttribute(
-  //       "src",
-  //       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png"
-  //     );
-  //   }
-  //   image.setAttribute("class", "img-thumbnail");
-  //   image.setAttribute("alt", `item${i}`);
-  //   const carouselCaption = document.createElement("div");
-  //   carouselCaption.classList.add("carousel-caption");
-  //   const carouselTitle = document.createElement("h3");
-  //   carouselTitle.innerText = items[i].volumeInfo.title;
-  //   const carouselDescription = document.createElement("p");
-  //   carouselDescription.innerText = items[i].volumeInfo.description;
-  //   holder.append(carouselDiv);
-  //   holder.append(image);
-  //   holder.append(carouselCaption);
-  //   carouselCaption.append(carouselTitle);
-  //   carouselCaption.append(carouselDescription);
-  // }
 }
