@@ -1,7 +1,6 @@
 .cards {
   display: flex;
   flex-direction: column;
-  width: 100%;
   align-items: center;
   text-align: center;
 }
@@ -9,3 +8,6 @@
   width: 150px;
   height: 150px;
 }
+/* .modalImages {
+  width: 200px;
+} */
