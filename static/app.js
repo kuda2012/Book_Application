@@ -221,23 +221,21 @@ function appendModal() {
 
 function addCarousel(items) {
   const holder = $(`#carouselInner`);
-
-  const info = $(`<div class="carousel-item active"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item0">
+  var active;
+  for (let i = 0; i < items.length; i++) {
+    if (i == 0) {
+      active = "active";
+    } else {
+      active = "";
+    }
+    const info = $(`<div class="carousel-item ${active}"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item${i}">
 <div class="carousel-caption">
-<h3 class="modalTitle">${items[0].volumeInfo.title}</h3>
-<p class = "modalParagraph">${items[0].volumeInfo.description}</p>
+<h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
+<p class = "modalParagraph">${items[i].volumeInfo.description}</p>
 </div>
 </div>
 `);
 
-  holder.append(info);
-
-  const info2 = $(`<div class="carousel-item"> <img class="cardImgSize" src=${items[1].volumeInfo.imageLinks.smallThumbnail} alt="item1">
-  <div class="carousel-caption">
-  <h3 class="modalTitle">${items[1].volumeInfo.title}</h3>
-  <p class = "modalParagraph">${items[1].volumeInfo.description}</p>
-  </div>
-  </div>
-  `);
-  holder.append(info2);
+    holder.append(info);
+  }
 }
