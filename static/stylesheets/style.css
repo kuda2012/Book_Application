@@ -16,7 +16,7 @@
   color: black;
 }
 .modalParagraph {
-  font-size: 5px;
+  font-size: 12px;
   color: black;
 }
 /* .carousel-control-next-icon,
@@ -44,3 +44,9 @@
   font-weight: bold;
   color: black;
 }
+.row {
+  text-align: center;
+}
+/* #containerFluid {
+  text-align: center;
+} */

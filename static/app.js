@@ -184,6 +184,8 @@ function appendModal() {
         <!--begin carousel-->
         <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
+            <div class="container-fluid" id ="containerFluid">
+              </div>
           </div>
           <!--Begin Previous and Next buttons-->
           <a
@@ -220,22 +222,41 @@ function appendModal() {
 }
 
 function addCarousel(items) {
-  const holder = $(`#carouselInner`);
+  const holder = $(`#containerFluid`);
   var active;
+  var img;
+  var paragraph;
   for (let i = 0; i < items.length; i++) {
     if (i == 0) {
       active = "active";
     } else {
       active = "";
     }
-    const info = $(`<div class="carousel-item ${active}"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item${i}">
-<div class="carousel-caption">
-<h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
-<p class = "modalParagraph">${items[i].volumeInfo.description}</p>
-</div>
-</div>
+    if (items[i].volumeInfo.imageLinks.smallThumbnail) {
+      img = items[i].volumeInfo.imageLinks.smallThumbnail;
+    } else {
+      img =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
+    }
+    if (items[i].volumeInfo.description) {
+      paragraph = items[i].volumeInfo.description;
+    } else {
+      paragraph = "A description of this book is not available";
+    }
+    const info = $(`<div class="carousel-item ${active}"> 
+                        <div class="row justify-content-start">
+                            <div class = "col-lg-4">
+                              <img src=${img} alt="item${i}">
+                            </div>  
+                           <div id = "carouselCaptionDiv" class = "col-lg-4">
+                                  <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
+                                  <p class = "modalParagraph">${paragraph}</p>
+                            </div>
+                        </div>
+                    </div>
 `);
 
     holder.append(info);
   }
+
 }
