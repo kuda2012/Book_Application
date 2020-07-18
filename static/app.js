@@ -232,5 +232,15 @@ function addCarousel(items) {
 </div>
 </div>
 `);
+
   holder.append(info);
+
+  const info2 = $(`<div class="item active"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
+<div class="carousel-caption">
+<h3>${items[1].volumeInfo.title}</h3>
+<p>${items[1].volumeInfo.description}</p>
+</div>
+</div>
+`);
+  holder.append(info2);
 }
