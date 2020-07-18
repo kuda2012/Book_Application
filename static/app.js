@@ -6,7 +6,7 @@ const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
 const cardContainer = $("#cardContainer");
 const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
-const containerUL = document.getElementById("containerUL");
+// const containerUL = document.getElementById("containerUL");
 
 var currentPage = 1;
 var numberPerPage = 9;
@@ -102,7 +102,7 @@ function check() {
 
 function addResults(items) {
   cardContainer.innerHTML = "";
-  containerUL.innerHTML = "";
+  // containerUL.innerHTML = "";
 
   if (document.getElementById("myModal")) {
     document.getElementById("myModal").remove();
@@ -117,9 +117,7 @@ function addResults(items) {
       }
       const newColumn = document.createElement("div");
       newColumn.setAttribute("class", "col-sm");
-      const newLI = document.createElement("li");
-      newLI.setAttribute("data-toggle", "modal");
-      newLI.setAttribute("data-target", "#myModal");
+      // const newLI = document.createElement("li");
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
@@ -134,14 +132,17 @@ function addResults(items) {
       }
 
       bookCard.setAttribute("id", items[j].id);
+      bookCard.setAttribute("data-toggle", "modal");
+      bookCard.setAttribute("data-target", "#myModal");
       buildCard(items[j], bookCard, j);
-      newLI.append(newAnchor);
-      newLI.append(bookCard);
-      newColumn.append(newLI);
+      // newLI.append(newAnchor);
+      // newLI.append(bookCard);
+      newColumn.append(newAnchor);
+      newColumn.append(bookCard);
       newRow.append(newColumn);
-      containerUL.append(newRow);
+      cardContainer.append(newRow);
     }
-    cardContainer.append(containerUL);
+    // cardContainer.append(containerUL);
   }
   const modal = appendModal(items);
   cardContainer.append(modal);
