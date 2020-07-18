@@ -109,7 +109,7 @@ function addResults(items) {
   }
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
-    newRow.setAttribute("class", "d-flex flex-row");
+    newRow.setAttribute("class", "d-flex flex-row justify-content-between");
     for (j = i; j < i + 3; j++) {
       if (j >= items.length) {
         cardContainer.append(newRow);
@@ -168,7 +168,7 @@ function buildCard(cardInfo, column) {
   return column;
 }
 
-function appendModal(items) {
+function appendModal() {
   const $modalMarkup = $(`
 <div class="modal fade" id="myModal">
   <div class="modal-dialog">
@@ -182,7 +182,7 @@ function appendModal(items) {
       <div class="modal-body">
         <!--CAROUSEL CODE GOES HERE-->
         <!--begin carousel-->
-        <div id="myGallery" class="carousel slide" data-interval="false">
+        <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
             <!--end carousel-inner-->
           </div>
@@ -235,12 +235,12 @@ function addCarousel(items) {
 
   holder.append(info);
 
-  const info2 = $(`<div class="item active"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
-<div class="carousel-caption">
-<h3>${items[1].volumeInfo.title}</h3>
-<p>${items[1].volumeInfo.description}</p>
-</div>
-</div>
-`);
+  const info2 = $(`<div class="item"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
+  <div class="carousel-caption">
+  <h3>${items[1].volumeInfo.title}</h3>
+  <p>${items[1].volumeInfo.description}</p>
+  </div>
+  </div>
+  `);
   holder.append(info2);
 }
