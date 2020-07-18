@@ -232,7 +232,7 @@ function addCarousel(items) {
 
   holder.append(info);
 
-  const info2 = $(`<div class="carousel-item"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
+  const info2 = $(`<div class="carousel-item"> <img class="cardImgSize" src=${items[1].volumeInfo.imageLinks.smallThumbnail} alt="item1">
   <div class="carousel-caption">
   <h3 class="modalTitle">${items[1].volumeInfo.title}</h3>
   <p class = "modalParagraph">${items[1].volumeInfo.description}</p>
