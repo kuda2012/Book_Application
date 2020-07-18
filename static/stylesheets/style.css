@@ -12,3 +12,10 @@
   width: 200px;
   height: 200px;
 }
+.modalTitle {
+  color: black;
+}
+.modalParagraph {
+  font-size: 5px;
+  color: black;
+}

@@ -170,13 +170,13 @@ function buildCard(cardInfo, column) {
 
 function appendModal() {
   const $modalMarkup = $(`
-<div class="modal fade" id="myModal">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <div class="pull-left">My Gallery Title</div>
-        <button type="button" class="close" data-dismiss="modal" title="Close">
-          <span class="glyphicon glyphicon-remove"></span>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
@@ -184,33 +184,30 @@ function appendModal() {
         <!--begin carousel-->
         <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
-            <!--end carousel-inner-->
           </div>
           <!--Begin Previous and Next buttons-->
           <a
-            class="left carousel-control"
+            class="carousel-control-prev"
             href="#myGallery"
             role="button"
             data-slide="prev"
           >
-            <span class="glyphicon glyphicon-chevron-left"></span
-          ></a>
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span></a>
           <a
-            class="right carousel-control"
+            class="carousel-control-next"
             href="#myGallery"
             role="button"
             data-slide="next"
           >
-            <span class="glyphicon glyphicon-chevron-right"></span
-          ></a>
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span></a>
           <!--end carousel-->
         </div>
         <!--end modal-body-->
       </div>
       <div class="modal-footer">
-        <div class="pull-left"></div>
-        <button class="btn-sm close" type="button" data-dismiss="modal">
-          Close
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </button>
         <!--end modal-footer-->
       </div>
@@ -225,20 +222,20 @@ function appendModal() {
 function addCarousel(items) {
   const holder = $(`#carouselInner`);
 
-  const info = $(`<div class="item active"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item0">
+  const info = $(`<div class="carousel-item active"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item0">
 <div class="carousel-caption">
-<h3>${items[0].volumeInfo.title}</h3>
-<p>${items[0].volumeInfo.description}</p>
+<h3 class="modalTitle">${items[0].volumeInfo.title}</h3>
+<p class = "modalParagraph">${items[0].volumeInfo.description}</p>
 </div>
 </div>
 `);
 
   holder.append(info);
 
-  const info2 = $(`<div class="item"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
+  const info2 = $(`<div class="carousel-item"> <img class="cardImgSize" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="item1">
   <div class="carousel-caption">
-  <h3>${items[1].volumeInfo.title}</h3>
-  <p>${items[1].volumeInfo.description}</p>
+  <h3 class="modalTitle">${items[1].volumeInfo.title}</h3>
+  <p class = "modalParagraph">${items[1].volumeInfo.description}</p>
   </div>
   </div>
   `);
