@@ -134,7 +134,7 @@ function addResults(items) {
       }
 
       bookCard.setAttribute("id", items[j].id);
-      buildCard(items[j], bookCard);
+      buildCard(items[j], bookCard, j);
       newLI.append(newAnchor);
       newLI.append(bookCard);
       newColumn.append(newLI);
@@ -148,8 +148,8 @@ function addResults(items) {
   addCarousel(items);
 }
 
-function buildCard(cardInfo, column) {
-  column.setAttribute("class", "cards");
+function buildCard(cardInfo, column, num) {
+  column.setAttribute("class", `cards pic${num}`);
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
   try {
@@ -165,6 +165,20 @@ function buildCard(cardInfo, column) {
   const cardTitle = document.createElement("div");
   cardTitle.innerText = cardInfo.volumeInfo.title;
   column.append(cardTitle);
+
+  column.addEventListener("click", function () {
+    const carouselItems = document.querySelectorAll(`.carousel-item`);
+    for (let i = 0; i < carouselItems.length; i++) {
+      if (carouselItems[i].classList.contains(`active`)) {
+        carouselItems[i].classList.remove("active");
+        console.log("hi");
+      }
+      if (carouselItems[i].classList.contains(`pic${num}`)) {
+        carouselItems[i].classList.add("active");
+        console.log("hi");
+      }
+    }
+  });
   return column;
 }
 
@@ -228,7 +242,7 @@ function addCarousel(items) {
   var paragraph;
   for (let i = 0; i < items.length; i++) {
     if (i == 0) {
-      active = "active";
+      active = "";
     } else {
       active = "";
     }
@@ -243,7 +257,7 @@ function addCarousel(items) {
     } else {
       paragraph = "A description of this book is not available";
     }
-    const info = $(`<div class="carousel-item ${active}"> 
+    const info = $(`<div class="carousel-item ${active} pic${i}"> 
                         <div class="row justify-content-start">
                             <div class = "col-lg-4">
                               <img src=${img} alt="item${i}">
@@ -258,5 +272,4 @@ function addCarousel(items) {
 
     holder.append(info);
   }
-
 }
