@@ -170,11 +170,11 @@ function buildCard(cardInfo, column) {
 
 function appendModal() {
   const $modalMarkup = $(`
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
+<div class="modal fade" id="myModal"  role="dialog" aria-labelledby="exampleModalLabel aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="pull-left">My Gallery Title</div>
+        <h5 class= "modal-title" id="exampleModalLabel">Page ${currentPage}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
         </button>
