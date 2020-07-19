@@ -39,3 +39,8 @@ class LoginForm(FlaskForm):
 
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
+
+class EditUserForm(FlaskForm):
+    
+    edit_username = StringField("Desired New Username", validators=[InputRequired()])
+    current_password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])

@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, jsonify, session, g, redirect, flash
+from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm
+from forms import BookConditionsForm, UserForm, LoginForm, EditUserForm
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
@@ -138,3 +138,74 @@ def logout():
 
 
 
+
+# Users#
+
+@app.route("/users/<user_id>")
+
+def show_user(user_id):
+    """Show user profile"""
+    
+
+    if not g.user:
+        return redirect("/")
+    else:
+        return render_template("user/show_user.html", user=g.user)
+        
+
+@app.route("/usernames/all")
+
+def check_username_availability():
+    """Return Yes if username is available"""
+    usernames = db.session.query(User.username).all()
+    print(request.json["username"])
+    if (redirect.json["username"],) in usernames:
+        print("No")
+        return "No"
+    else:
+        print("Yes")
+        return "Yes" 
+
+
+@app.route("/users/<user_id>/edit")
+
+def edit_user(user_id):
+    """Show user options to edit their profile"""
+
+
+    if not g.user:
+        return redirect("/")
+        flash("Invalid credentials.", 'danger')
+
+    return render_template('user/edit_user.html', user = g.user)
+    
+@app.route("/users/<user_id>/edit/username", methods = ["GET", "POST"])
+
+def edit_username(user_id):
+    """Edit Username """
+
+
+    if not g.user:
+        return redirect("/")
+        flash("Invalid credentials.", 'danger')
+    form = EditUserForm()
+
+
+
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                                 form.current_password.data)
+
+        if user:
+            user.username = form.edit_username.data
+            db.session.add(user)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                    flash("Username Already Taken", "danger")
+                    return redirect(f"/users/{user_id}/edit/username")
+            flash(f"Username changed to {user.username}")
+            return redirect(f"users/{user_id}")
+        flash("Invalid Current Password", 'danger')
+    return render_template('user/edit_username.html', user = g.user, form = form)
+    
