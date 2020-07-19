@@ -267,19 +267,19 @@ function addCarousel(items) {
     }
 
     const info = $(`<div class="carousel-item" data-card-clicked = ${i}> 
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center carousel-row">
                             <div class = "col-md-8">
                               <img src=${img} alt="item${i}">
                             </div>                     
                         </div>
-                        <div class = "row justify-content-center">
+                        <div class = "row justify-content-center carousel-row">
                             <div id = "carouselCaptionDiv" class = "col-md-12">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
                                   <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
-                        <div class = "row justify-content-center">
+                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-md-12">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-success">Learn More</button>
