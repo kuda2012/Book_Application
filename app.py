@@ -123,7 +123,12 @@ def logout():
     """Handle logout of user."""
 
     # IMPLEMENT THIS
-    user = User.query.get(session[CURR_USER_KEY])
-    flash(f"See you later, {user.username}", "success")
-    do_logout()
-    return redirect("/")
+    try:
+        user = User.query.get(session[CURR_USER_KEY])
+        flash(f"See you later, {user.username}", "success")
+        do_logout()
+        return redirect("/")
+    except KeyError:
+        return redirect("/")
+
+
