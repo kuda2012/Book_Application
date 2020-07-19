@@ -65,7 +65,7 @@ def homepage():
     if not g.user:
         return render_template("home_userless.html", form=form)
     else:
-        return render_template("home_logged_in.html", form=form)
+        return render_template("home_logged_in.html", form=form, user = g.user)
 
 
 
@@ -135,5 +135,6 @@ def logout():
         return redirect("/")
     except KeyError:
         return redirect("/")
+
 
 
