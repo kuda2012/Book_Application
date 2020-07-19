@@ -168,7 +168,7 @@ function buildCard(cardInfo, column, index) {
       if (carouselItems[i].classList.contains(`active`)) {
         carouselItems[i].classList.remove("active");
       }
-      if (carouselItems[i].getAttribute("data-card-clicked") == num) {
+      if (carouselItems[i].getAttribute("data-card-clicked") == index) {
         carouselItems[i].classList.add("active");
       }
     }
