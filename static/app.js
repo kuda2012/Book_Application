@@ -4,9 +4,9 @@ const categoryInput = document.getElementById("categories_filter");
 const authorInput = document.getElementById("author_filter");
 const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
-const cardContainer = $("#cardContainer");
+const cardsAndModal = $("#cardsAndModal");
 const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
-// const containerUL = document.getElementById("containerUL");
+const cardsContainer = document.getElementById("cardsContainer");
 
 var currentPage = 1;
 var numberPerPage = 9;
@@ -41,7 +41,6 @@ searchForm.addEventListener("submit", async (evt) => {
   console.log(resp);
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
-  // createModal(resp.data.items);
 });
 
 function getNumberOfPages(list) {
@@ -88,7 +87,7 @@ function loadList(items) {
   var begin = (currentPage - 1) * numberPerPage;
   var end = begin + numberPerPage;
   addResults(items.slice(begin, end));
-  check(); // determines the states of the pagination buttons
+  check();
 }
 function check() {
   document.getElementById("next").disabled =
@@ -101,8 +100,8 @@ function check() {
 }
 
 function addResults(items) {
-  cardContainer.innerHTML = "";
-  // containerUL.innerHTML = "";
+  cardsAndModal.innerHTML = "";
+  cardsContainer.innerHTML = "";
 
   if (document.getElementById("myModal")) {
     document.getElementById("myModal").remove();
@@ -111,13 +110,11 @@ function addResults(items) {
     const newRow = document.createElement("div");
     newRow.setAttribute("class", "d-flex flex-row justify-content-between");
     for (j = i; j < i + 3; j++) {
-      if (j >= items.length) {
-        cardContainer.append(newRow);
+      if (j == items.length) {
         return;
       }
       const newColumn = document.createElement("div");
       newColumn.setAttribute("class", "col-sm");
-      // const newLI = document.createElement("li");
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
@@ -130,27 +127,25 @@ function addResults(items) {
       } catch (err) {
         bookCard.setAttribute("data-isbn-10", "N/A");
       }
-
       bookCard.setAttribute("id", items[j].id);
       bookCard.setAttribute("data-toggle", "modal");
       bookCard.setAttribute("data-target", "#myModal");
       buildCard(items[j], bookCard, j);
-      // newLI.append(newAnchor);
-      // newLI.append(bookCard);
       newColumn.append(newAnchor);
       newColumn.append(bookCard);
       newRow.append(newColumn);
-      cardContainer.append(newRow);
+      cardsContainer.append(newRow);
     }
-    // cardContainer.append(containerUL);
   }
+  cardsAndModal.append(cardsContainer);
   const modal = appendModal(items);
-  cardContainer.append(modal);
+  cardsAndModal.append(modal);
   addCarousel(items);
 }
 
-function buildCard(cardInfo, column, num) {
-  column.setAttribute("class", `cards pic${num}`);
+function buildCard(cardInfo, column, index) {
+  column.setAttribute("class", `cards`);
+  column.setAttribute("data-card-clicked", index);
   const cardImg = document.createElement("img");
   cardImg.setAttribute("class", "cardImgSize");
   try {
@@ -172,11 +167,9 @@ function buildCard(cardInfo, column, num) {
     for (let i = 0; i < carouselItems.length; i++) {
       if (carouselItems[i].classList.contains(`active`)) {
         carouselItems[i].classList.remove("active");
-        console.log("hi");
       }
-      if (carouselItems[i].classList.contains(`pic${num}`)) {
+      if (carouselItems[i].getAttribute("data-card-clicked") == num) {
         carouselItems[i].classList.add("active");
-        console.log("hi");
       }
     }
   });
@@ -238,16 +231,11 @@ function appendModal() {
 
 function addCarousel(items) {
   const holder = $(`#containerFluid`);
-  var active;
   var img;
   var paragraph;
+  var authors = "";
   for (let i = 0; i < items.length; i++) {
-    if (i == 0) {
-      active = "";
-    } else {
-      active = "";
-    }
-    if (items[i].volumeInfo.imageLinks.smallThumbnail) {
+    if (items[i].volumeInfo.imageLinks) {
       img = items[i].volumeInfo.imageLinks.smallThumbnail;
     } else {
       img =
@@ -258,14 +246,35 @@ function addCarousel(items) {
     } else {
       paragraph = "A description of this book is not available";
     }
-    const info = $(`<div class="carousel-item ${active} pic${i}"> 
-                        <div class="row justify-content-start">
-                            <div class = "col-lg-4">
+
+    if (items[i].volumeInfo.authors) {
+      for (let j = 0; j < items[i].volumeInfo.authors.length; j++) {
+        if (authors == "") {
+          authors = items[i].volumeInfo.authors[j];
+        } else {
+          authors = authors + ", " + items[i].volumeInfo.authors[j];
+        }
+      }
+    }
+
+    const info = $(`<div class="carousel-item" data-card-clicked = ${i}> 
+                        <div class="row justify-content-center">
+                            <div class = "col-md-8">
                               <img src=${img} alt="item${i}">
-                            </div>  
-                           <div id = "carouselCaptionDiv" class = "col-lg-4">
+                            </div>                     
+                        </div>
+                        <div class = "row justify-content-center">
+                            <div id = "carouselCaptionDiv" class = "col-md-12">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
+                                  <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
+                            </div>
+                        </div>
+                        <div class = "row justify-content-center">
+                            <div class = "col-md-12">
+                                  <a href = ${items[i].volumeInfo.infoLink}>
+                                    <button class = "btn btn-success">Learn More</button>
+                                  </a>
                             </div>
                         </div>
                     </div>
