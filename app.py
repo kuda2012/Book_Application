@@ -18,3 +18,5 @@ def homepage():
 
     form = BookConditionsForm()
     return render_template("index.html", form = form)
+
+
