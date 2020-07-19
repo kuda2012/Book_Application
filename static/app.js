@@ -28,6 +28,10 @@ searchForm.addEventListener("submit", async (evt) => {
   if (previewInput.value) {
     parameters["filter"] = previewInput.value;
   }
+  if (searchInput.value == "") {
+    alert("Please enter an input to search for");
+    return;
+  }
   parameters["maxResults"] = 40;
   resp = await axios.get(BASE_URL, {
     params: parameters,
@@ -37,7 +41,12 @@ searchForm.addEventListener("submit", async (evt) => {
     searchInput.value = "";
     return;
   }
+
   searchInput.value = "";
+  orderByInput.value = "";
+  previewInput.value = "";
+  categoryInput.value = "";
+
   console.log(resp);
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);

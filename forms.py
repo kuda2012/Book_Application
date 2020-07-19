@@ -17,7 +17,7 @@ orderBy = [("","---"),("newest","Newest"), ("relevance", "Relevance")]
 class BookConditionsForm(FlaskForm):
 
     general_search = StringField(
-        "Enter Title, Author, ISBN or a combination of the 3", validators=[InputRequired()])
+        "Enter Title, Author, or ISBN", validators=[InputRequired()])
     order_by_filter = SelectField("Order By", choices=[order for order in orderBy])
     preview_filter = SelectField("Preview availablity", choices = [preview for preview in previews])
     categories_filter = SelectField("Filter By Category", validators=[Optional()], choices=[
