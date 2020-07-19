@@ -132,3 +132,4 @@ def logout():
         return redirect("/")
 
 
+@app.route("/")
