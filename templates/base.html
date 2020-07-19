@@ -20,7 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/">Home</a>
       <button
         class="navbar-toggler"
@@ -47,7 +47,11 @@
             <li class="nav-item my-2 my-lg-0">
             <a class="nav-link" href="/logout">Logout</a>
           </li>
-          <!-- <li class="nav-item dropdown">
+          </li>
+            <li class="nav-item my-2 my-lg-0">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -66,7 +70,7 @@
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
           </li> -->
-          <!-- <li class="nav-item">
+    <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
           </li>
         </ul>
@@ -81,13 +85,8 @@
             Search
           </button>
         </form> -->
-      </div>
-    </nav>
-    <div class="container">
-      {% for category, message in get_flashed_messages(with_categories=True) %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
+    <!-- </div>
+    </nav>  -->
     {% block content %} {% endblock %}
     <script src="/static/app.js"></script>
     <script src="/static/books.js"></script>

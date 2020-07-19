@@ -55,12 +55,17 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
-@app.route("/")
+
+
+@app.route('/')
 def homepage():
     """Show homepage."""
 
     form = BookConditionsForm()
-    return render_template("index.html", form = form)
+    if not g.user:
+        return render_template("home_userless.html", form=form)
+    else:
+        return render_template("home_logged_in.html", form=form)
 
 
 
@@ -132,4 +137,3 @@ def logout():
         return redirect("/")
 
 
-@app.route("/")
