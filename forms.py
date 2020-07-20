@@ -40,7 +40,12 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
 
-class EditUserForm(FlaskForm):
+class EditUsernameForm(FlaskForm):
     
     username = StringField("Desired New Username", validators=[InputRequired(), Length(min =5, max=50)])
     password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
+
+class EditUserPasswordForm(FlaskForm):
+    password = PasswordField("Enter Current Password", validators=[InputRequired()])
+    new_password = PasswordField("Enter New Password", validators=[InputRequired(), Length(min=5)])
+    new_password_match = PasswordField("Enter New Password Match", validators=[InputRequired(),Length(min = 5)])

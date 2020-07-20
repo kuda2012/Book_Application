@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm, EditUserForm
+from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
@@ -82,6 +82,8 @@ def signup():
     """
 
     form = UserForm()
+    if g.user:
+        return redirect(f"/")
 
     if form.validate_on_submit():
         try:
@@ -106,9 +108,9 @@ def signup():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
-
+    if g.user:
+        return redirect(f"/")
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
@@ -127,13 +129,12 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    # IMPLEMENT THIS
-    try:
+    if g.user:
         user = User.query.get(session[CURR_USER_KEY])
         flash(f"See you later, {user.username}", "success")
         do_logout()
         return redirect("/")
-    except KeyError:
+    else:
         return redirect("/")
 
 
@@ -148,6 +149,7 @@ def show_user(user_id):
     
 
     if not g.user:
+        flash("Must be logged in to access this", 'danger')
         return redirect("/")
     else:
         return render_template("user/show_user.html", user=g.user)
@@ -160,13 +162,16 @@ def check_username_availability():
 
 
     usernames = [username[0] for username in db.session.query(User.username).all()]
-    
+
+    if g.user:
+        if request.args["username"] == g.user.username:
+             return "This is your current username"
     if request.args["username"] in usernames:
         return "Username is already taken"
     elif len(request.args["username"]) < 4:
-        return "Username too short"
+        return "Username too short (must be at least 5 characters)"
     elif len(request.args["username"]) > 50:
-        return "Username too long"
+        return "Username too long (maximum length = 50 characters)"
     else:
         return "Username is available"
 
@@ -178,8 +183,9 @@ def edit_user(user_id):
 
 
     if not g.user:
+        flash("Must be logged in to access this", 'danger')
         return redirect("/")
-        flash("Invalid credentials.", 'danger')
+
 
     return render_template('user/edit_user.html', user = g.user)
     
@@ -190,9 +196,10 @@ def edit_username(user_id):
 
 
     if not g.user:
+        flash("Must be logged in to access this", 'danger')
         return redirect("/")
-        flash("Invalid credentials.", 'danger')
-    form = EditUserForm()
+
+    form = EditUsernameForm()
 
 
 
@@ -201,6 +208,9 @@ def edit_username(user_id):
                                  form.password.data)
 
         if user:
+            if user.username == form.username.data:
+                flash("Current Username entered, Username not changed", "danger")
+                return redirect(f"users/{user_id}")
             user.username = form.username.data
             db.session.add(user)
             try:
@@ -208,8 +218,40 @@ def edit_username(user_id):
             except IntegrityError:
                     flash("Username Already Taken", "danger")
                     return redirect(f"/users/{user_id}/edit/username")
-            flash(f"Username changed to {user.username}")
+            flash(f"Username changed to {user.username}", "success")
             return redirect(f"users/{user_id}")
         flash("Invalid Current Password", 'danger')
     return render_template('user/edit_username.html', user = g.user, form = form)
     
+@app.route("/users/<user_id>/edit/password", methods = ["GET", "POST"])
+
+def edit_password(user_id):
+    """Edit Password """
+
+
+    if not g.user:
+        flash("Must be logged in to access this", 'danger') 
+        return redirect("/")
+
+    form = EditUserPasswordForm()
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                                 form.password.data)
+
+        if user:
+            
+            if form.new_password.data != form.new_password_match.data:
+                flash("New Password inputs did not match, try again", "danger")
+                return redirect(f"users/{user_id}/edit/password")
+            elif form.new_password.data == form.password.data:
+                flash("Current Password entered, Password not changed", "danger")
+                return redirect("/")
+            else:
+                user = User.change_password(user, form.new_password.data)
+                flash("Password Changed", "success")
+                return redirect("/")
+        else:
+            flash("Invalid Current Password", "danger")
+            return redirect(f"users/{user_id}/edit/password")
+    
+    return render_template("user/edit_password.html", form = form, user = g.user)

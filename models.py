@@ -57,6 +57,20 @@ class User(db.Model):
 
         db.session.add(user)
         return user
+    @classmethod
+    def change_password(cls, user, password):
+        """Sign up user.
+
+        Hashes password and adds user to system.
+        """
+
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        user.password = hashed_pwd
+        db.session.add(user)
+        db.session.commit()
+        return user
+
 
     @classmethod
     def authenticate(cls, username, password):
