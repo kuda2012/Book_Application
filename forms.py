@@ -48,4 +48,8 @@ class EditUsernameForm(FlaskForm):
 class EditUserPasswordForm(FlaskForm):
     password = PasswordField("Enter Current Password", validators=[InputRequired()])
     new_password = PasswordField("Enter New Password", validators=[InputRequired(), Length(min=5)])
-    new_password_match = PasswordField("Enter New Password Match", validators=[InputRequired(),Length(min = 5)])
+    new_password_match = PasswordField("Enter New Password, again", validators=[InputRequired(), Length(min=5)])
+
+
+class DeleteUserForm(FlaskForm):
+    password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])

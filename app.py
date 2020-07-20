@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm
+from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
 from models import db, User, connect_db
 import os
+import re
 # import wtforms_json
 
 
@@ -158,7 +159,7 @@ def show_user(user_id):
 @app.route("/usernames/all")
 
 def check_username_availability():
-    """Return Yes if username is available"""
+    """Check if username is available"""
 
 
     usernames = [username[0] for username in db.session.query(User.username).all()]
@@ -169,11 +170,43 @@ def check_username_availability():
     if request.args["username"] in usernames:
         return "Username is already taken"
     elif len(request.args["username"]) < 4:
-        return "Username too short (must be at least 5 characters)"
+        return "Username is too short (must be at least 5 characters)"
     elif len(request.args["username"]) > 50:
-        return "Username too long (maximum length = 50 characters)"
+        return "Username is too long (maximum length = 50 characters)"
     else:
         return "Username is available"
+
+@app.route("/emails/all")
+
+def check_emails_availability():
+    """Check if email is available"""
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$' 
+        
+    # Define a function for 
+    # for validating an Email 
+    def check(email):  
+
+        # pass the regular expression 
+        # and the string in search() method 
+        if(re.search(regex,email)):  
+            return True  
+            
+        else:  
+            return False 
+      
+  
+
+    emails = [email[0] for email in db.session.query(User.email).all()]
+
+    if request.args["email"] in emails:
+        return "Email is already taken"
+    elif len(request.args["email"]) > 50:
+        return "Email is too long (maximum length = 50 characters)"
+    elif check(request.args["email"]):
+        return "Email is available"
+    else:
+        return "Email is not a valid email address"
 
 
 @app.route("/users/<user_id>/edit")
@@ -254,4 +287,30 @@ def edit_password(user_id):
             flash("Invalid Current Password", "danger")
             return redirect(f"users/{user_id}/edit/password")
     
-    return render_template("user/edit_password.html", form = form, user = g.user)
+    return render_template("user/edit_password.html", form=form, user=g.user)
+    
+
+@app.route("/users/<user_id>/delete_user", methods=["GET", "POST"])
+
+
+def delete_user(user_id):
+    """Permanently delete ccount"""
+    if not g.user:
+        flash("Must be logged in to access this", 'danger') 
+        return redirect("/")
+
+    form = DeleteUserForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                            form.password.data)
+        if user:
+            db.session.delete(user)
+            username = user.username
+            db.session.commit()
+            flash(f"Farewell, {username}. You're always welcome to come back", "primary")
+            return redirect("/")
+        flash("Invalid Password", "danger")
+        return redirect(f"users/{user_id}/delete_user")
+    return render_template("user/delete_user.html", form = form , user = g.user)
+
