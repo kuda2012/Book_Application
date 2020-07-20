@@ -97,7 +97,7 @@ def signup():
             return render_template('signup.html', form=form)
 
         do_login(user)
-
+        flash(f"Hello, {user.username}!", "success")
         return redirect("/")
 
     else:
@@ -157,14 +157,18 @@ def show_user(user_id):
 
 def check_username_availability():
     """Return Yes if username is available"""
-    usernames = db.session.query(User.username).all()
-    print(request.json["username"])
-    if (redirect.json["username"],) in usernames:
-        print("No")
-        return "No"
+
+
+    usernames = [username[0] for username in db.session.query(User.username).all()]
+    
+    if request.args["username"] in usernames:
+        return "Username is already taken"
+    elif len(request.args["username"]) < 4:
+        return "Username too short"
+    elif len(request.args["username"]) > 50:
+        return "Username too long"
     else:
-        print("Yes")
-        return "Yes" 
+        return "Username is available"
 
 
 @app.route("/users/<user_id>/edit")
@@ -194,10 +198,10 @@ def edit_username(user_id):
 
     if form.validate_on_submit():
         user = User.authenticate(g.user.username,
-                                 form.current_password.data)
+                                 form.password.data)
 
         if user:
-            user.username = form.edit_username.data
+            user.username = form.username.data
             db.session.add(user)
             try:
                 db.session.commit()
