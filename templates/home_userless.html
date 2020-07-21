@@ -37,8 +37,9 @@ content%}
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
     <div class="form-group">
-      {{field.label}} {{field}} {%if field.errors%}{%for error in
-      field.errors%}{{error}}{%endfor%}{%endif%}
+      {{field.label}} {{field}} {%if field.errors%}{%for error in field.errors%}
+      <div class="formError bg-warning">{{error}}</div>
+      {%endfor%}{%endif%}
     </div>
     {%endfor%}
     <button>Submit</button>

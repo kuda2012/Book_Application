@@ -6,6 +6,7 @@ const deleteUser = document.getElementById("delete_user");
 const BASE_URL_USERNAMES = "http://127.0.0.1:5000/usernames/all";
 const BASE_URL_EMAILS = "http://127.0.0.1:5000/emails/all";
 const submitButton = document.getElementById("submitButton");
+const formErrors = Array.from(document.querySelectorAll(".formError"));
 submitButton.disabled = true;
 
 // Register Page Logic
@@ -28,23 +29,29 @@ if (editUsernameInput) {
       submitButton.disabled = false;
     }
     console.log(resp);
+    if (formErrors) {
+      for (let err of formErrors) {
+        err.innerText = "";
+      }
+    }
   });
   const emailInput = document.getElementById("email");
   if (emailInput) {
-    const formError = document.getElementById("formError");
     const emailAvailability = document.createElement("div");
     emailAvailability.setAttribute("id", "emailAvailability");
     forms[1].append(emailAvailability);
     emailInput.addEventListener("input", async function () {
-      if (formError) {
-        formError.innerText = "";
-      }
-
       resp = await axios.get(BASE_URL_EMAILS, {
         params: { email: emailInput.value },
       });
       emailAvailability.innerText = resp.data;
       console.log(resp);
+
+      if (formErrors) {
+        for (let err of formErrors) {
+          err.innerText = "";
+        }
+      }
     });
   }
   if (passwordInputMatch) {
@@ -58,12 +65,22 @@ if (editUsernameInput) {
         passwordMatchCheck.innerText = "Passwords are a match";
         submitButton.disabled = false;
       }
+      if (formErrors) {
+        for (let err of formErrors) {
+          err.innerText = "";
+        }
+      }
     });
   }
 }
 // Delete User Logic
 if (deleteUser) {
   submitButton.disabled = false;
+  if (formErrors) {
+    for (let err of formErrors) {
+      err.innerText = "";
+    }
+  }
 }
 
 // Edit Password Logic
@@ -80,6 +97,11 @@ if (newPasswordInput) {
     } else {
       passwordMatchCheck.innerText = "Passwords are a match";
       submitButton.disabled = false;
+    }
+    if (formErrors) {
+      for (let err of formErrors) {
+        err.innerText = "";
+      }
     }
   });
 }
