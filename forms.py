@@ -33,6 +33,7 @@ class UserForm(FlaskForm):
                                InputRequired(), Length(min =5, max=50)])
     email = StringField("Email", validators=[Email(), InputRequired(), Length(max = 50)])
     password = PasswordField("Password", validators=[InputRequired(),Length(min = 5)])
+    new_password_match = PasswordField("Enter Password, again", validators=[InputRequired(), Length(min=5)])
 
 
 class LoginForm(FlaskForm):
@@ -52,4 +53,4 @@ class EditUserPasswordForm(FlaskForm):
 
 
 class DeleteUserForm(FlaskForm):
-    password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
+    delete_user = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
