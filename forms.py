@@ -30,12 +30,27 @@ class BookConditionsForm(FlaskForm):
 
 class UserForm(FlaskForm):
     username = StringField("Username", validators=[
-                               InputRequired(), Length(max=20)])
+                               InputRequired(), Length(min =5, max=50)])
     email = StringField("Email", validators=[Email(), InputRequired(), Length(max = 50)])
-    password = PasswordField("Password", validators=[InputRequired()])
+    password = PasswordField("Password", validators=[InputRequired(),Length(min = 5)])
+    new_password_match = PasswordField("Enter Password, again", validators=[InputRequired(), Length(min=5)])
 
 
 class LoginForm(FlaskForm):
 
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
+
+class EditUsernameForm(FlaskForm):
+    
+    username = StringField("Desired New Username", validators=[InputRequired(), Length(min =5, max=50)])
+    password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
+
+class EditUserPasswordForm(FlaskForm):
+    password = PasswordField("Enter Current Password", validators=[InputRequired()])
+    new_password = PasswordField("Enter New Password", validators=[InputRequired(), Length(min=5)])
+    new_password_match = PasswordField("Enter New Password, again", validators=[InputRequired(), Length(min=5)])
+
+
+class DeleteUserForm(FlaskForm):
+    delete_user = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])

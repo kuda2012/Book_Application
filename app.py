@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, jsonify, session, g, redirect, flash
+from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm
+from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
 from models import db, User, connect_db
 import os
+import re
 # import wtforms_json
 
 
@@ -82,6 +83,8 @@ def signup():
     """
 
     form = UserForm()
+    if g.user:
+        return redirect(f"/")
 
     if form.validate_on_submit():
         try:
@@ -97,7 +100,7 @@ def signup():
             return render_template('signup.html', form=form)
 
         do_login(user)
-
+        flash(f"Hello, {user.username}!", "success")
         return redirect("/")
 
     else:
@@ -106,9 +109,9 @@ def signup():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
-
+    if g.user:
+        return redirect(f"/")
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
@@ -127,14 +130,187 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    # IMPLEMENT THIS
-    try:
+    if g.user:
         user = User.query.get(session[CURR_USER_KEY])
         flash(f"See you later, {user.username}", "success")
         do_logout()
         return redirect("/")
-    except KeyError:
+    else:
         return redirect("/")
 
 
+
+
+# Users#
+
+@app.route("/users/<user_id>")
+
+def show_user(user_id):
+    """Show user profile"""
+    
+
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+    else:
+        return render_template("user/show_user.html", user=g.user)
+        
+
+@app.route("/usernames/all")
+
+def check_username_availability():
+    """Check if username is available"""
+
+
+    usernames = [username[0] for username in db.session.query(User.username).all()]
+
+    if g.user:
+        if request.args["username"] == g.user.username:
+             return "This is your current username"
+    if request.args["username"] in usernames:
+        return "Username is already taken"
+    elif len(request.args["username"]) < 4:
+        return "Username is too short (must be at least 5 characters)"
+    elif len(request.args["username"]) > 50:
+        return "Username is too long (maximum length = 50 characters)"
+    else:
+        return "Username is available"
+
+@app.route("/emails/all")
+
+def check_emails_availability():
+    """Check if email is available"""
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$' 
+        
+    # Define a function for 
+    # for validating an Email 
+    def check(email):  
+
+        # pass the regular expression 
+        # and the string in search() method 
+        if(re.search(regex,email)):  
+            return True  
+            
+        else:  
+            return False 
+      
+  
+
+    emails = [email[0] for email in db.session.query(User.email).all()]
+
+    if request.args["email"] in emails:
+        return "Email is already taken"
+    elif len(request.args["email"]) > 50:
+        return "Email is too long (maximum length = 50 characters)"
+    elif check(request.args["email"]):
+        return "Email is available"
+    else:
+        return "Email is not a valid email address"
+
+
+@app.route("/users/<user_id>/edit")
+
+def edit_user(user_id):
+    """Show user options to edit their profile"""
+
+
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+
+
+    return render_template('user/edit_user.html', user = g.user)
+    
+@app.route("/users/<user_id>/edit/username", methods = ["GET", "POST"])
+
+def edit_username(user_id):
+    """Edit Username """
+
+
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+
+    form = EditUsernameForm()
+
+
+
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                                 form.password.data)
+
+        if user:
+            if user.username == form.username.data:
+                flash("Current Username entered, Username not changed", "danger")
+                return redirect(f"users/{user_id}")
+            user.username = form.username.data
+            db.session.add(user)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                    flash("Username Already Taken", "danger")
+                    return redirect(f"/users/{user_id}/edit/username")
+            flash(f"Username changed to {user.username}", "success")
+            return redirect(f"users/{user_id}")
+        flash("Invalid Current Password", 'danger')
+    return render_template('user/edit_username.html', user = g.user, form = form)
+    
+@app.route("/users/<user_id>/edit/password", methods = ["GET", "POST"])
+
+def edit_password(user_id):
+    """Edit Password """
+
+
+    if not g.user:
+        flash("Must be logged in to access this", 'danger') 
+        return redirect("/")
+
+    form = EditUserPasswordForm()
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                                 form.password.data)
+
+        if user:
+            
+            if form.new_password.data != form.new_password_match.data:
+                flash("New Password inputs did not match, try again", "danger")
+                return redirect(f"users/{user_id}/edit/password")
+            elif form.new_password.data == form.password.data:
+                flash("Current Password entered, Password not changed", "danger")
+                return redirect("/")
+            else:
+                user = User.change_password(user, form.new_password.data)
+                flash("Password Changed", "success")
+                return redirect("/")
+        else:
+            flash("Invalid Current Password", "danger")
+            return redirect(f"users/{user_id}/edit/password")
+    
+    return render_template("user/edit_password.html", form=form, user=g.user)
+    
+
+@app.route("/users/<user_id>/delete_user", methods=["GET", "POST"])
+
+
+def delete_user(user_id):
+    """Permanently delete ccount"""
+    if not g.user:
+        flash("Must be logged in to access this", 'danger') 
+        return redirect("/")
+
+    form = DeleteUserForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                            form.password.data)
+        if user:
+            db.session.delete(user)
+            username = user.username
+            db.session.commit()
+            flash(f"Farewell, {username}. You're always welcome to come back", "primary")
+            return redirect("/")
+        flash("Invalid Password", "danger")
+        return redirect(f"users/{user_id}/delete_user")
+    return render_template("user/delete_user.html", form = form , user = g.user)
 

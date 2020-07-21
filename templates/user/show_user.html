@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block title %}Home_logged_in{% endblock %} {%block
 content%}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Home</a>
   <button
@@ -24,31 +25,23 @@ content%}
     </ul>
   </div>
 </nav>
-
 <div class="container">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}
 </div>
 <div>
-  <form action="/" method="POST" id="searchForm">
-    {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
-    'hidden'%}
-    <div class="form-group">
-      {{field.label}} {{field}} {%if field.errors%}{%for error in
-      field.errors%}{{error}}{%endfor%}{%endif%}
-    </div>
-    {%endfor%}
-    <button>Submit</button>
-  </form>
+  <h1>User Info</h1>
+  <ul>
+    <li>Username: {{user.username}}</li>
+    <li>Email: {{user.email}}</li>
+    <form style="display: inline;" action="/users/{{user.id}}/edit">
+      <button>Edit User</button>
+    </form>
+    <a href="/users/{{user.id}}/delete_user">
+      <button>Interested in deleting account?</button>
+    </a>
+  </ul>
 </div>
 
-<div class="container" id="cardsAndModal">
-  <div id="cardsContainer"></div>
-</div>
-<input type="button" id="first" value="first" />
-<input type="button" id="next" value="next" />
-<input type="button" id="previous" value="previous" />
-<input type="button" id="last" value="last" />
-<script src="/static/app.js"></script>
 {%endblock%}
