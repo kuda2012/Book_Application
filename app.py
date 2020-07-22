@@ -29,6 +29,7 @@ connect_db(app)
 
 db.create_all()
 
+
 BASE_URL = "https://www.googleapis.com/books/v1/volumes?"
 
 
@@ -100,10 +101,11 @@ def signup():
             return render_template('signup.html', form=form)
 
         do_login(user)
-        flash(f"Hello, {user.username}!", "success")
+        flash(f"Welcome, {user.username}!", "success")
         return redirect("/")
 
     else:
+        print(form.errors)
         return render_template('signup.html', form=form)
 
 @app.route('/login', methods=["GET", "POST"])
@@ -122,8 +124,9 @@ def login():
             return redirect("/")
 
         flash("Invalid credentials.", 'danger')
-
-    return render_template('login.html', form=form)
+        return render_template('login.html', form=form)
+    else:
+        return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -169,7 +172,7 @@ def check_username_availability():
              return "This is your current username"
     if request.args["username"] in usernames:
         return "Username is already taken"
-    elif len(request.args["username"]) < 4:
+    elif len(request.args["username"]) < 5:
         return "Username is too short (must be at least 5 characters)"
     elif len(request.args["username"]) > 50:
         return "Username is too long (maximum length = 50 characters)"
@@ -303,7 +306,7 @@ def delete_user(user_id):
 
     if form.validate_on_submit():
         user = User.authenticate(g.user.username,
-                            form.password.data)
+                            form.delete_user.data)
         if user:
             db.session.delete(user)
             username = user.username

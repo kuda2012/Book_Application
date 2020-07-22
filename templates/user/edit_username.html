@@ -37,9 +37,8 @@ content%}
     <div class="row">
       <div class="col-8">
         <div class="form-group">
-          {{field.label}}{{field(class_="form-control")}}
-          <div id="usernameAvailability"></div>
-          {%if field.errors%}{%for error in field.errors%}
+          {{field.label}}{{field(class_="form-control")}} {%if
+          field.errors%}{%for error in field.errors%}
           <div class="formError bg-warning">{{error}}</div>
           {%endfor%}{%endif%}
         </div>
@@ -52,5 +51,5 @@ content%}
     </button>
   </form>
 </div>
-<script src="/static/forms.js"></script>
+<script src="/static/forms/edit_username.js"></script>
 {%endblock%}

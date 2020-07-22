@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
+
 def connect_db(app):
     db.app = app
     db.init_app(app)
@@ -38,6 +39,18 @@ class User(db.Model):
         db.Text,
         nullable=False,
     )
+
+    class SavedBooks(db.Model):
+        """Table of saved books for the user"""
+        
+        __tablename__ = 'saved_books'
+        
+        book_id = db.Column(db.String, primary_key=True)
+        isbn10 = db.Column(db.Integer, index=True)
+        isbn13 = db.Column(db.Integer, index=True)
+        title = db.Column(db.String, index=True)
+        user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
 
 
     @classmethod
