@@ -40,16 +40,16 @@ class User(db.Model):
         nullable=False,
     )
 
-    class SavedBooks(db.Model):
-        """Table of saved books for the user"""
+class SavedBooks(db.Model):
+    """Table of saved books for the user"""
         
-        __tablename__ = 'saved_books'
+    __tablename__ = 'saved_books'
         
-        book_id = db.Column(db.String, primary_key=True)
-        isbn10 = db.Column(db.Integer, index=True)
-        isbn13 = db.Column(db.Integer, index=True)
-        title = db.Column(db.String, index=True)
-        user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    book_id = db.Column(db.String, primary_key=True)
+    isbn10 = db.Column(db.Integer, index=True)
+    isbn13 = db.Column(db.Integer, index=True)
+    title = db.Column(db.String, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
 

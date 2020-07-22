@@ -4,7 +4,7 @@ from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, Edi
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
-from models import db, User, connect_db
+from models import db, User, connect_db, SavedBooks
 import os
 import re
 # import wtforms_json
@@ -144,7 +144,7 @@ def logout():
 
 
 
-# Users#
+# User Info Routes
 
 @app.route("/users/<user_id>")
 
@@ -316,4 +316,14 @@ def delete_user(user_id):
         flash("Invalid Password", "danger")
         return redirect(f"users/{user_id}/delete_user")
     return render_template("user/delete_user.html", form = form , user = g.user)
+
+#Save Books Routes
+
+
+@app.route("/users/<user_id>/books", methods = ["GET", "POST"])
+
+def show_books(user_id):
+    print(request.form, request.values, request.args)
+    return request.form["bookID"]
+
 

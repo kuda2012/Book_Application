@@ -284,11 +284,11 @@ function addCarousel(items) {
 function saveBooks(i) {
   const saveBook = document.getElementById(`saveBook${i}`);
   saveBook.addEventListener("click", async function () {
-    const bookId = saveBook.getAttribute("data-save-book");
-    console.log(bookId);
+    const bookID = saveBook.getAttribute("data-save-book");
+    console.log(bookID);
     const userID = saveBook.getAttribute("data-user-id");
-    response = await axios.post(`users/${userID}/books`, {
-      params: { bookId: bookId },
+    response = await axios.post(`${BASE_URL_USERS}/${userID}/books`, {
+      bookID: bookID,
     });
     console.log(response);
   });
