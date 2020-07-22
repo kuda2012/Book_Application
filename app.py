@@ -31,6 +31,7 @@ db.create_all()
 
 
 BASE_URL = "https://www.googleapis.com/books/v1/volumes?"
+BASE_URL_VOLUME_SEARCH = "https://www.googleapis.com/books/v1/volumes"
 
 
 @app.before_request
@@ -57,8 +58,6 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
-
-
 @app.route('/')
 def homepage():
     """Show homepage."""
@@ -67,8 +66,7 @@ def homepage():
     if not g.user:
         return render_template("home_userless.html", form=form)
     else:
-        return render_template("home_logged_in.html", form=form, user = g.user)
-
+        return render_template("home_logged_in.html", form=form, user=g.user)
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -108,6 +106,7 @@ def signup():
         print(form.errors)
         return render_template('signup.html', form=form)
 
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
@@ -142,34 +141,29 @@ def logout():
         return redirect("/")
 
 
-
-
 # User Info Routes
 
 @app.route("/users/<user_id>")
-
 def show_user(user_id):
     """Show user profile"""
-    
 
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
     else:
         return render_template("user/show_user.html", user=g.user)
-        
+
 
 @app.route("/usernames/all")
-
 def check_username_availability():
     """Check if username is available"""
 
-
-    usernames = [username[0] for username in db.session.query(User.username).all()]
+    usernames = [username[0]
+                 for username in db.session.query(User.username).all()]
 
     if g.user:
         if request.args["username"] == g.user.username:
-             return "This is your current username"
+            return "This is your current username"
     if request.args["username"] in usernames:
         return "Username is already taken"
     elif len(request.args["username"]) < 5:
@@ -179,26 +173,24 @@ def check_username_availability():
     else:
         return "Username is available"
 
-@app.route("/emails/all")
 
+@app.route("/emails/all")
 def check_emails_availability():
     """Check if email is available"""
     regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$' 
-        
-    # Define a function for 
-    # for validating an Email 
-    def check(email):  
+    # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
 
-        # pass the regular expression 
-        # and the string in search() method 
-        if(re.search(regex,email)):  
-            return True  
-            
-        else:  
-            return False 
-      
-  
+    # Define a function for
+    # for validating an Email
+    def check(email):
+
+        # pass the regular expression
+        # and the string in search() method
+        if(re.search(regex, email)):
+            return True
+
+        else:
+            return False
 
     emails = [email[0] for email in db.session.query(User.email).all()]
 
@@ -213,31 +205,25 @@ def check_emails_availability():
 
 
 @app.route("/users/<user_id>/edit")
-
 def edit_user(user_id):
     """Show user options to edit their profile"""
-
 
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
+    return render_template('user/edit_user.html', user=g.user)
 
-    return render_template('user/edit_user.html', user = g.user)
-    
-@app.route("/users/<user_id>/edit/username", methods = ["GET", "POST"])
 
+@app.route("/users/<user_id>/edit/username", methods=["GET", "POST"])
 def edit_username(user_id):
     """Edit Username """
-
 
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
     form = EditUsernameForm()
-
-
 
     if form.validate_on_submit():
         user = User.authenticate(g.user.username,
@@ -252,21 +238,20 @@ def edit_username(user_id):
             try:
                 db.session.commit()
             except IntegrityError:
-                    flash("Username Already Taken", "danger")
-                    return redirect(f"/users/{user_id}/edit/username")
+                flash("Username Already Taken", "danger")
+                return redirect(f"/users/{user_id}/edit/username")
             flash(f"Username changed to {user.username}", "success")
             return redirect(f"users/{user_id}")
         flash("Invalid Current Password", 'danger')
-    return render_template('user/edit_username.html', user = g.user, form = form)
-    
-@app.route("/users/<user_id>/edit/password", methods = ["GET", "POST"])
+    return render_template('user/edit_username.html', user=g.user, form=form)
 
+
+@app.route("/users/<user_id>/edit/password", methods=["GET", "POST"])
 def edit_password(user_id):
     """Edit Password """
 
-
     if not g.user:
-        flash("Must be logged in to access this", 'danger') 
+        flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
     form = EditUserPasswordForm()
@@ -275,7 +260,7 @@ def edit_password(user_id):
                                  form.password.data)
 
         if user:
-            
+
             if form.new_password.data != form.new_password_match.data:
                 flash("New Password inputs did not match, try again", "danger")
                 return redirect(f"users/{user_id}/edit/password")
@@ -289,41 +274,53 @@ def edit_password(user_id):
         else:
             flash("Invalid Current Password", "danger")
             return redirect(f"users/{user_id}/edit/password")
-    
+
     return render_template("user/edit_password.html", form=form, user=g.user)
-    
+
 
 @app.route("/users/<user_id>/delete_user", methods=["GET", "POST"])
-
-
 def delete_user(user_id):
     """Permanently delete ccount"""
     if not g.user:
-        flash("Must be logged in to access this", 'danger') 
+        flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
     form = DeleteUserForm()
 
     if form.validate_on_submit():
         user = User.authenticate(g.user.username,
-                            form.delete_user.data)
+                                 form.delete_user.data)
         if user:
             db.session.delete(user)
             username = user.username
             db.session.commit()
-            flash(f"Farewell, {username}. You're always welcome to come back", "primary")
+            flash(
+                f"Farewell, {username}. You're always welcome to come back", "primary")
             return redirect("/")
         flash("Invalid Password", "danger")
         return redirect(f"users/{user_id}/delete_user")
-    return render_template("user/delete_user.html", form = form , user = g.user)
+    return render_template("user/delete_user.html", form=form, user=g.user)
 
-#Save Books Routes
+# Save Books Routes
 
 
-@app.route("/users/<user_id>/books", methods = ["GET", "POST"])
-
+@app.route("/users/<user_id>/books", methods=["GET", "POST"])
 def show_books(user_id):
-    print(request.form, request.values, request.args)
-    return request.form["bookID"]
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
 
-
+    if request.method == "POST":
+        print(request.json["bookID"])
+        print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+        resp = requests.get(
+            f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+        response = resp.json()
+        # print(response["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+        saved_book = SavedBooks(book_id=response["id"], isbn10=response["volumeInfo"]["industryIdentifiers"]
+                                [0]["identifier"], isbn13=response["volumeInfo"]["industryIdentifiers"][1]["identifier"],
+                                title = response["volumeInfo"]["title"], description = response["volumeInfo"]["description"], thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"], user_id = g.user.id)
+        db.session.add(saved_book)
+        db.session.commit()
+        print(saved_book)
+        return jsonify(response)

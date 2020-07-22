@@ -63,6 +63,10 @@ function pageResults(items) {
     newRow.setAttribute("class", "d-flex flex-row justify-content-between");
     for (j = i; j < i + 3; j++) {
       if (j == items.length) {
+        cardsAndModal.append(cardsContainer);
+        const modal = appendModal(items);
+        cardsAndModal.append(modal);
+        addCarousel(items);
         return;
       }
       const newColumn = document.createElement("div");
@@ -277,7 +281,9 @@ function addCarousel(items) {
 
       holder.append(infoLoggedOut);
     }
-    saveBooks(i);
+    if (document.getElementById("userLoggedIn")) {
+      saveBooks(i);
+    }
   }
 }
 

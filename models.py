@@ -39,20 +39,6 @@ class User(db.Model):
         db.Text,
         nullable=False,
     )
-
-class SavedBooks(db.Model):
-    """Table of saved books for the user"""
-        
-    __tablename__ = 'saved_books'
-        
-    book_id = db.Column(db.String, primary_key=True)
-    isbn10 = db.Column(db.Integer, index=True)
-    isbn13 = db.Column(db.Integer, index=True)
-    title = db.Column(db.String, index=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-
-
     @classmethod
     def signup(cls, username, email, password):
         """Sign up user.
@@ -104,3 +90,19 @@ class SavedBooks(db.Model):
                 return user
 
         return False
+
+class SavedBooks(db.Model):
+    """Table of saved books for the user"""
+        
+    __tablename__ = 'saved_books'
+        
+    book_id = db.Column(db.String, primary_key=True)
+    isbn10 = db.Column(db.String, index=True)
+    isbn13 = db.Column(db.String, index=True)
+    title = db.Column(db.String, index=True)
+    description = db.Column(db.String, default = "A description of this book is not available")
+    thumbnail = db.Column(db.String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+
+
