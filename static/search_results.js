@@ -5,12 +5,11 @@ const authorInput = document.getElementById("author_filter");
 const previewInput = document.getElementById("preview_filter");
 const orderByInput = document.getElementById("order_by_filter");
 const cardsAndModal = $("#cardsAndModal");
-const BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
+const BASE_URL_GOOGLE_BOOKS_API =
+  "https://www.googleapis.com/books/v1/volumes?";
+const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
 
-var currentPage = 1;
-var numberPerPage = 9;
-var numberOfPages = 1;
 var resp = null;
 
 searchForm.addEventListener("submit", async (evt) => {
@@ -33,7 +32,7 @@ searchForm.addEventListener("submit", async (evt) => {
     return;
   }
   parameters["maxResults"] = 40;
-  resp = await axios.get(BASE_URL, {
+  resp = await axios.get(BASE_URL_GOOGLE_BOOKS_API, {
     params: parameters,
   });
   if (resp.data.items == null) {
@@ -52,63 +51,7 @@ searchForm.addEventListener("submit", async (evt) => {
   firstPage(resp.data.items);
 });
 
-function getNumberOfPages(list) {
-  return Math.ceil(list.length / numberPerPage);
-}
-
-document.getElementById("next").addEventListener("click", function () {
-  nextPage(resp.data.items);
-});
-
-document.getElementById("previous").addEventListener("click", function () {
-  previousPage(resp.data.items);
-});
-
-document.getElementById("first").addEventListener("click", function () {
-  firstPage(resp.data.items);
-});
-
-document.getElementById("last").addEventListener("click", function () {
-  lastPage(resp.data.items);
-});
-
-function nextPage(items) {
-  currentPage += 1;
-  loadList(items);
-}
-
-function previousPage(items) {
-  currentPage -= 1;
-  loadList(items);
-}
-
-function firstPage(items) {
-  currentPage = 1;
-  loadList(items);
-}
-
-function lastPage(items) {
-  currentPage = numberOfPages;
-  loadList(items);
-}
-
-function loadList(items) {
-  var begin = (currentPage - 1) * numberPerPage;
-  var end = begin + numberPerPage;
-  addResults(items.slice(begin, end));
-  check();
-}
-function check() {
-  document.getElementById("next").disabled =
-    currentPage == numberOfPages ? true : false;
-  document.getElementById("previous").disabled =
-    currentPage == 1 ? true : false;
-  document.getElementById("first").disabled = currentPage == 1 ? true : false;
-  document.getElementById("last").disabled =
-    currentPage == numberOfPages ? true : false;
-}
-
-function addResults(items) {
+function pageResults(items) {
   cardsAndModal.innerHTML = "";
   cardsContainer.innerHTML = "";
 
@@ -266,7 +209,50 @@ function addCarousel(items) {
       }
     }
 
-    const info = $(`<div class="carousel-item" data-card-clicked = ${i}> 
+    if (document.getElementById("userLoggedIn")) {
+      const myBooks = document
+        .getElementById("userLoggedIn")
+        .getAttribute("data-user-books");
+      const userID = document
+        .getElementById("userLoggedIn")
+        .getAttribute("data-user-id");
+      const infoLoggedIn = $(`<div class="carousel-item" data-card-clicked = ${i}> 
+                        <div class="row justify-content-center carousel-row">
+                            <div class = "col-md-8">
+                              <img class = "cardImgSize" src=${img} alt="item${i}">
+                            </div>                     
+                        </div>
+                        <div class = "row justify-content-center carousel-row">
+                            <div id = "carouselCaptionDiv" class = "col-md-12">
+                                  <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
+                                  <h6>${authors}</h6>
+                                  <p class = "modalParagraph">${paragraph}</p>
+                            </div>
+                        </div>
+                        <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                  <a href = ${items[i].volumeInfo.infoLink}>
+                                    <button class = "btn btn-success">Learn More</button>
+                                  </a>
+                            </div>
+                        </div>
+                      <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                  <a href = ${myBooks}>
+                                    <button class = "btn btn-primary">My books</button>
+                                  </a>
+                            </div>
+                        </div>
+                      <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Save to your books</button>
+                            </div>
+                        </div>
+                    </div>
+`);
+      holder.append(infoLoggedIn);
+    } else {
+      const infoLoggedOut = $(`<div class="carousel-item" data-card-clicked = ${i}> 
                         <div class="row justify-content-center carousel-row">
                             <div class = "col-md-8">
                               <img src=${img} alt="item${i}">
@@ -289,6 +275,21 @@ function addCarousel(items) {
                     </div>
 `);
 
-    holder.append(info);
+      holder.append(infoLoggedOut);
+    }
+    saveBooks(i);
   }
+}
+
+function saveBooks(i) {
+  const saveBook = document.getElementById(`saveBook${i}`);
+  saveBook.addEventListener("click", async function () {
+    const bookId = saveBook.getAttribute("data-save-book");
+    console.log(bookId);
+    const userID = saveBook.getAttribute("data-user-id");
+    response = await axios.post(`users/${userID}/books`, {
+      params: { bookId: bookId },
+    });
+    console.log(response);
+  });
 }
