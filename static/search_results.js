@@ -119,6 +119,7 @@ function buildCard(cardInfo, column, index) {
   column.append(cardTitle);
 
   column.addEventListener("click", function () {
+    // document.getElementById("cardsAndModal").classList.toggle("container");
     const carouselItems = document.querySelectorAll(`.carousel-item`);
     for (let i = 0; i < carouselItems.length; i++) {
       if (carouselItems[i].classList.contains(`active`)) {
@@ -148,8 +149,8 @@ function appendModal() {
         <!--begin carousel-->
         <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
-            <div class="container" id ="containerFluid">
-              </div>
+            <div  id ="containerFluid" >
+            </div>
           </div>
           <!--Begin Previous and Next buttons-->
           <a
@@ -245,47 +246,47 @@ function addCarousel(items) {
       const userID = document
         .getElementById("userLoggedIn")
         .getAttribute("data-user-id");
-      const infoLoggedIn = $(`<div class="carousel-item" data-card-clicked = ${i}> 
-                        <div class="row justify-content-center carousel-row">
-                            <div class = "col-md-8">
+      const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
+                        <div class="row justify-content-center">
+                            <div class = "col-8">
                               <img class = "cardImgSize" src=${img} alt="item${i}">
                             </div>                     
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-md-12">
+                            <div id = "carouselCaptionDiv" class = "col-12">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
                                   <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                 <div>Average Rating: ${averageRating}
                                 </div>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                 <div>ISBN-13: ${isbn13}
                                 </div>
                             </div>
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-success">Learn More</button>
                                   </a>
                             </div>
                         </div>
                       <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                   <a href = ${myBooks}>
                                     <button class = "btn btn-primary">My books</button>
                                   </a>
                             </div>
                         </div>
                       <div class = "row justify-content-start carousel-row">
-                            <div class = "col-md-6">
+                            <div class = "col-6">
                                     <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Save to your books</button>
                             </div>
                         </div>
@@ -295,31 +296,31 @@ function addCarousel(items) {
     } else {
       const infoLoggedOut = $(`<div class="carousel-item" data-card-clicked = ${i}> 
                         <div class="row justify-content-center carousel-row">
-                            <div class = "col-md-8">
+                            <div class = "col-8">
                               <img src=${img} alt="item${i}">
                             </div>                     
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-md-12">
+                            <div id = "carouselCaptionDiv" class = "col-12">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
                                   <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                 <div> Average Rating: ${averageRating}
                                 </div>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                 <div> ISBN-13: ${isbn13}
                                 </div>
                             </div>
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                            <div class = "col-12">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-success">Learn More</button>
                                   </a>
