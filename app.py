@@ -314,6 +314,7 @@ def show_books_api(user_id):
     for book in saved_books:
         # print(type(book))
         books_array.append(book.serialize())
+        # print(books_array)
 
     
     return jsonify(books_array)
@@ -384,6 +385,7 @@ def add_books(user_id):
         info = none
     try:
         authors = response["volumeInfo"]["authors"]
+        print(authors)
         # print(authors)
         # authors = authors.strip("")
         # authors = authors.join("")

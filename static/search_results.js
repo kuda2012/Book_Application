@@ -148,7 +148,7 @@ function appendModal() {
         <!--begin carousel-->
         <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
-            <div class="container-fluid" id ="containerFluid">
+            <div class="container" id ="containerFluid">
               </div>
           </div>
           <!--Begin Previous and Next buttons-->
@@ -210,6 +210,8 @@ function addCarousel(items) {
     try {
       if (items[i].volumeInfo.averageRating) {
         averageRating = `${items[i].volumeInfo.averageRating}/5`;
+      } else {
+        averageRating = "N/A";
       }
     } catch (err) {
       averageRating = "N/A";
@@ -256,13 +258,6 @@ function addCarousel(items) {
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
-                                  <a href = ${items[i].volumeInfo.infoLink}>
-                                    <button class = "btn btn-success">Learn More</button>
-                                  </a>
-                            </div>
-                        </div>
                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-md-12">
                                 <div>Average Rating: ${averageRating}
@@ -275,6 +270,13 @@ function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
+                        <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                  <a href = ${items[i].volumeInfo.infoLink}>
+                                    <button class = "btn btn-success">Learn More</button>
+                                  </a>
+                            </div>
+                        </div>
                       <div class = "row justify-content-center carousel-row">
                             <div class = "col-md-12">
                                   <a href = ${myBooks}>
@@ -282,8 +284,8 @@ function addCarousel(items) {
                                   </a>
                             </div>
                         </div>
-                      <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                      <div class = "row justify-content-start carousel-row">
+                            <div class = "col-md-6">
                                     <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Save to your books</button>
                             </div>
                         </div>

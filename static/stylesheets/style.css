@@ -49,7 +49,7 @@
   text-align: center;
 } */
 .carousel-row {
-  text-align: center;
+  align-items: center;
 }
 /* #containerFluid {
   text-align: center;

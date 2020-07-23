@@ -196,15 +196,33 @@ function addCarousel(items) {
   var img;
   var paragraph;
   var authors = "";
-  var author_items;
   for (let i = 0; i < items.length; i++) {
     img = items[i].thumbnail;
     paragraph = items[i].description;
     if (items[i].authors) {
-      var regex = /"(.*?)"/;
-      authors = items[i].authors.match(regex);
+      // console.log(items[i].authors);
+      var replace_1 = items[i].authors.replace(/{/g, "[");
+      // console.log(replace_1);
+      replace_1 = replace_1.replace(/}/g, "]");
+      // console.log(replace_1);
+      // replace_1 = `${replace_1}`;
+      authors = JSON.parse(replace_1);
+      // console.log(authors);
+      authors = authors.reverse();
+      var spaced_authors = "";
+      for (author of authors) {
+        if (spaced_authors == "") {
+          spaced_authors = author;
+        } else {
+          spaced_authors = author + ", " + spaced_authors;
+        }
+      }
+      console.log(spaced_authors);
 
-      console.log(authors);
+      // var regex = /"(.*?)"/;
+      // authors = items[i].authors.match(regex);
+
+      // console.log(authors);
       // for (let j = 0; j < items[i].authors.length; j++) {
       //   if (authors == "") {
       //   } else {
@@ -229,7 +247,7 @@ function addCarousel(items) {
                         <div class = "row justify-content-center carousel-row">
                             <div id = "carouselCaptionDiv" class = "col-md-12">
                                   <h3 class="modalTitle">${items[i].title}</h3>
-                                  <h6>${authors}</h6>
+                                  <h6>${spaced_authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
@@ -265,7 +283,7 @@ function addCarousel(items) {
                         <div class = "row justify-content-center carousel-row">
                             <div id = "carouselCaptionDiv" class = "col-md-12">
                                   <h3 class="modalTitle">${items[i].title}</h3>
-                                  <h6>${authors}</h6>
+                                  <h6>${spaced_authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
