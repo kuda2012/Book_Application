@@ -343,19 +343,20 @@ def add_books(user_id):
         return redirect("/")
     # print(request.json["bookID"])
     # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
-    user_book = SavedBooks.query.filter_by(book_id=request.json["bookID"]).one_or_none()
+    user_book = SavedBooks.query.filter_by(id=request.json["id"]).one_or_none()
     print(user_book)
     if user_book:
         return "You've already saved this book"
     resp = requests.get(
-        f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+        f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
     response = resp.json()
-    # print(response["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+    print(response["volumeInfo"]["authors"])
     isbn13 = None
     thumbnail = None
     description = None
     rating = None
     info = None
+    authors = None
 
     try:
         isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
@@ -381,7 +382,14 @@ def add_books(user_id):
         info = response["volumeInfo"]["infoLink"]
     except KeyError:
         info = none
-    saved_book = SavedBooks(book_id=response["id"], isbn13=isbn13,rating = rating, info = info,
+    try:
+        authors = response["volumeInfo"]["authors"]
+        # print(authors)
+        # authors = authors.strip("")
+        # authors = authors.join("")
+    except KeyError:
+        authors = None
+    saved_book = SavedBooks(id=response["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
                             title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
     db.session.add(saved_book)

@@ -75,14 +75,14 @@ function pageResults(items) {
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
       const bookCard = document.createElement("div");
-      try {
-        bookCard.setAttribute(
-          "data-isbn-10",
-          items[j].volumeInfo.industryIdentifiers[0].identifier
-        );
-      } catch (err) {
-        bookCard.setAttribute("data-isbn-10", "N/A");
-      }
+      // try {
+      //   bookCard.setAttribute(
+      //     "data-isbn-10",
+      //     items[j].volumeInfo.industryIdentifiers[0].identifier
+      //   );
+      // } catch (err) {
+      //   bookCard.setAttribute("data-isbn-10", "N/A");
+      // }
       bookCard.setAttribute("id", items[j].id);
       bookCard.setAttribute("data-toggle", "modal");
       bookCard.setAttribute("data-target", "#myModal");
@@ -222,15 +222,18 @@ function addCarousel(items) {
     } catch (err) {
       isbn13 = "N/A";
     }
-
-    if (items[i].volumeInfo.authors) {
-      for (let j = 0; j < items[i].volumeInfo.authors.length; j++) {
-        if (authors == "") {
-          authors = items[i].volumeInfo.authors[j];
-        } else {
-          authors = authors + ", " + items[i].volumeInfo.authors[j];
-        }
+    try {
+      if (items[i].volumeInfo.authors) {
+        authors = items[i].volumeInfo.authors;
+        // for (let j = 0; j < items[i].volumeInfo.authors.length; j++) {
+        //   if (authors == "") {
+        //   } else {
+        //     authors = authors + ", " + items[i].volumeInfo.authors[j];
+        //   }
+        // }
       }
+    } catch {
+      authors = "N/A";
     }
 
     if (document.getElementById("userLoggedIn")) {
@@ -338,7 +341,7 @@ function saveBooks(i) {
     console.log(bookID);
     const userID = saveBook.getAttribute("data-user-id");
     response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
-      bookID: bookID,
+      id: bookID,
     });
     console.log(response);
   });

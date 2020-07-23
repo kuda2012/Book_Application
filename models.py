@@ -96,11 +96,12 @@ class SavedBooks(db.Model):
         
     __tablename__ = 'saved_books'
         
-    book_id = db.Column(db.String, primary_key=True)
+    id = db.Column(db.String, primary_key=True, default = "The ID of this book is not available")
     isbn13 = db.Column(db.String, index=True, default = "N/A")
-    title = db.Column(db.String, index=True)
+    title = db.Column(db.String, index=True, default = "The title of this book is not available")
     rating = db.Column(db.String, default="N/A")
-    info = db.Column(db.String)
+    info = db.Column(db.String, default="N/A")
+    authors = db.Column(db.String, default = "N/A")
     description = db.Column(db.String, default = "A description of this book is not available")
     thumbnail = db.Column(db.String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -112,11 +113,12 @@ class SavedBooks(db.Model):
 
     def serialize(self):
         return {
-            "id": self.book_id,
+            "id": self.id,
             "title": self.title,
             "isbn13": self.isbn13,
             "rating": self.rating,
             "thumbnail": self.thumbnail,
             "description": self.description,
-            "info":self.info
+            "info": self.info,
+            "authors":self.authors
         }
