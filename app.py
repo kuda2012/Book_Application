@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm
+from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm, SearchSavedBooks
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from secrets import SECRET_KEY
@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgres:///book_db'))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 
@@ -301,52 +301,90 @@ def delete_user(user_id):
         return redirect(f"users/{user_id}/delete_user")
     return render_template("user/delete_user.html", form=form, user=g.user)
 
-# Save Books Routes
+# Saved Books Routes
 
-
-@app.route("/users/<user_id>/books", methods=["GET", "POST"])
-def show_books(user_id):
+@app.route("/API/users/<user_id>/books", methods=["GET"])
+def show_books_api(user_id):
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
-    if request.method == "POST":
-        # print(request.json["bookID"])
-        # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
-        resp = requests.get(
-            f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
-        response = resp.json()
-        # print(response["volumeInfo"]["industryIdentifiers"][0]["identifier"])
-        isbn10 = None
+    saved_books = SavedBooks.query.filter_by(user_id=g.user.id).all()
+    books_array = []
+    for book in saved_books:
+        # print(type(book))
+        books_array.append(book.serialize())
+
+    
+    return jsonify(books_array)
+
+
+
+@app.route("/users/<user_id>/books", methods=["GET"])
+def show_books(user_id):
+    """Add book to saved books"""
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+    form = SearchSavedBooks()
+    # saved_books = SavedBooks.query.all()
+    return render_template("show_books.html", form = form, user = g.user)
+
+
+
+
+
+
+@app.route("/users/<user_id>/books/add", methods=["POST"])
+def add_books(user_id):
+    """Add book to saved books"""
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+    # print(request.json["bookID"])
+    # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+    user_book = SavedBooks.query.filter_by(book_id=request.json["bookID"]).one_or_none()
+    print(user_book)
+    if user_book:
+        return "You've already saved this book"
+    resp = requests.get(
+        f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+    response = resp.json()
+    # print(response["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+    isbn13 = None
+    thumbnail = None
+    description = None
+    rating = None
+    info = None
+
+    try:
+        isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
+    except KeyError:
         isbn13 = None
+    try:
+        thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"]
+    except KeyError:
         thumbnail = None
+    try:
+        description = response["volumeInfo"]["description"]
+    except KeyError:
         description = None
-        try:
-            isbn10 = response["volumeInfo"]["industryIdentifiers"][0]["identifier"]
-        except KeyError:
-            isbn10 = None
-        try:
-            isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
-        except KeyError:
-            isbn13 = None
-        try:
-            thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"]
-        except KeyError:
-            thumbnail = None
-        try:
-            description = response["volumeInfo"]["description"]
-        except KeyError:
-            description = None
-        try:
-            title = response["volumeInfo"]["title"]
-        except KeyError:
-            title = None
+    try:
+        title = response["volumeInfo"]["title"]
+    except KeyError:
+        title = None
+    try:
+        rating = response["volumeInfo"]["averageRating"]
+    except KeyError:
+        rating = None
+    try:
+        info = response["volumeInfo"]["infoLink"]
+    except KeyError:
+        info = none
+    saved_book = SavedBooks(book_id=response["id"], isbn13=isbn13,rating = rating, info = info,
+                            title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
-        saved_book = SavedBooks(book_id=response["id"], isbn10=isbn10, isbn13=isbn13,
-                                title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
-
-        db.session.add(saved_book)
-        db.session.commit()
-        print(saved_book)
-        return jsonify(response)
-
+    db.session.add(saved_book)
+    db.session.commit()
+    print(saved_book)
+    return jsonify(response)

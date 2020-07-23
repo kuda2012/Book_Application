@@ -1,5 +1,4 @@
-{% extends "base.html" %}{% block title %}Edit User{% endblock %} {%block
-content%}
+{% extends "base.html" %} {% block title %}Books{% endblock %} {%block content%}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Home</a>
   <button
@@ -40,27 +39,27 @@ content%}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}
 </div>
-<div class="container">
-  <h1 class="display-3" id="editUsernameTitle">Edit Username</h1>
-  <form action="/users/{{user.id}}/edit/username" method="POST">
+<div>
+  <form action="/" method="POST" id="searchForm">
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
-    <div class="row">
-      <div class="col-8">
-        <div class="form-group">
-          {{field.label}}{{field(class_="form-control")}} {%if
-          field.errors%}{%for error in field.errors%}
-          <div class="formError bg-warning">{{error}}</div>
-          {%endfor%}{%endif%}
-        </div>
-      </div>
+    <div class="form-group">
+      {{field.label}} {{field}} {%if field.errors%}{%for error in field.errors%}
+      <div class="formError bg-warning">{{error}}</div>
+      {%endfor%}{%endif%}
     </div>
     {%endfor%}
-    <button class="btn btn-success" id="submitButton">Submit</button>
-    <button class="btn btn-warning ml-1">
-      <a style="color: white;" href="/users/{{user.id}}">Cancel</a>
-    </button>
+    <button>Submit</button>
   </form>
 </div>
-<script src="/static/forms/edit_username.js"></script>
+
+<div class="container" id="cardsAndModal">
+  <div id="cardsContainer"></div>
+</div>
+<input type="button" id="first" value="first" />
+<input type="button" id="next" value="next" />
+<input type="button" id="previous" value="previous" />
+<input type="button" id="last" value="last" />
+<script src="/static/saved_books_results.js"></script>
+<script src="/static/pagination.js"></script>
 {%endblock%}

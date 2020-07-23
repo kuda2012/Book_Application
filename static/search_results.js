@@ -190,10 +190,15 @@ function addCarousel(items) {
   var img;
   var paragraph;
   var authors = "";
+  var averageRating = "";
+  var isbn13;
+
   for (let i = 0; i < items.length; i++) {
-    if (items[i].volumeInfo.imageLinks) {
-      img = items[i].volumeInfo.imageLinks.smallThumbnail;
-    } else {
+    try {
+      if (items[i].volumeInfo.imageLinks) {
+        img = items[i].volumeInfo.imageLinks.smallThumbnail;
+      }
+    } catch (err) {
       img =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
     }
@@ -201,6 +206,21 @@ function addCarousel(items) {
       paragraph = items[i].volumeInfo.description;
     } else {
       paragraph = "A description of this book is not available";
+    }
+    try {
+      if (items[i].volumeInfo.averageRating) {
+        averageRating = `${items[i].volumeInfo.averageRating}/5`;
+      }
+    } catch (err) {
+      averageRating = "N/A";
+    }
+
+    try {
+      if (items[i].volumeInfo.industryIdentifiers) {
+        isbn13 = `${items[i].volumeInfo.industryIdentifiers[1].identifier}`;
+      }
+    } catch (err) {
+      isbn13 = "N/A";
     }
 
     if (items[i].volumeInfo.authors) {
@@ -240,6 +260,18 @@ function addCarousel(items) {
                                   </a>
                             </div>
                         </div>
+                       <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                <div>Average Rating: ${averageRating}
+                                </div>
+                            </div>
+                        </div>
+                       <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                <div>ISBN-13: ${isbn13}
+                                </div>
+                            </div>
+                        </div>
                       <div class = "row justify-content-center carousel-row">
                             <div class = "col-md-12">
                                   <a href = ${myBooks}>
@@ -269,6 +301,18 @@ function addCarousel(items) {
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
+                       <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                <div> Average Rating: ${averageRating}
+                                </div>
+                            </div>
+                        </div>
+                       <div class = "row justify-content-center carousel-row">
+                            <div class = "col-md-12">
+                                <div> ISBN-13: ${isbn13}
+                                </div>
+                            </div>
+                        </div>
                         <div class = "row justify-content-center carousel-row">
                             <div class = "col-md-12">
                                   <a href = ${items[i].volumeInfo.infoLink}>
@@ -293,7 +337,7 @@ function saveBooks(i) {
     const bookID = saveBook.getAttribute("data-save-book");
     console.log(bookID);
     const userID = saveBook.getAttribute("data-user-id");
-    response = await axios.post(`${BASE_URL_USERS}/${userID}/books`, {
+    response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
       bookID: bookID,
     });
     console.log(response);

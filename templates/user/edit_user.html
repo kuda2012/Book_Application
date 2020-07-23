@@ -18,12 +18,23 @@ content%}
       <li class="nav-item">
         <a class="nav-link" href="/users/{{user.id}}">Profile</a>
       </li>
-      <li class="nav-item my-2 my-lg-0">
-        <a class="nav-link" href="/logout">Logout ({{user.username}})</a>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="userLoggedIn"
+          data-user-books="users/{{user.id}}/books"
+          data-user-id="{{user.id}}"
+          href="/logout"
+          >Logout ({{user.username}})</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
       </li>
     </ul>
   </div>
 </nav>
+
 <div class="container">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>

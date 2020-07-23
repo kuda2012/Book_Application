@@ -18,7 +18,7 @@ content%}
       <li class="nav-item">
         <a class="nav-link" href="/users/{{user.id}}">Profile</a>
       </li>
-      <li class="nav-item my-2 my-lg-0">
+      <li class="nav-item">
         <a
           class="nav-link"
           id="userLoggedIn"
@@ -27,6 +27,9 @@ content%}
           href="/logout"
           >Logout ({{user.username}})</a
         >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
       </li>
     </ul>
   </div>

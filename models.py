@@ -97,12 +97,26 @@ class SavedBooks(db.Model):
     __tablename__ = 'saved_books'
         
     book_id = db.Column(db.String, primary_key=True)
-    isbn10 = db.Column(db.String, index=True)
-    isbn13 = db.Column(db.String, index=True)
+    isbn13 = db.Column(db.String, index=True, default = "N/A")
     title = db.Column(db.String, index=True)
+    rating = db.Column(db.String, default="N/A")
+    info = db.Column(db.String)
     description = db.Column(db.String, default = "A description of this book is not available")
     thumbnail = db.Column(db.String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
 
+    # def __repr__(self):
+    #     return f"id = {self.id}, flavor = {self.flavor}, size = {self.size}, rating = {self.rating}, image = {self.image}"
+
+    def serialize(self):
+        return {
+            "id": self.book_id,
+            "title": self.title,
+            "isbn13": self.isbn13,
+            "rating": self.rating,
+            "thumbnail": self.thumbnail,
+            "description": self.description,
+            "info":self.info
+        }
