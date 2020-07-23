@@ -311,16 +311,42 @@ def show_books(user_id):
         return redirect("/")
 
     if request.method == "POST":
-        print(request.json["bookID"])
-        print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+        # print(request.json["bookID"])
+        # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
         resp = requests.get(
             f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
         response = resp.json()
         # print(response["volumeInfo"]["industryIdentifiers"][0]["identifier"])
-        saved_book = SavedBooks(book_id=response["id"], isbn10=response["volumeInfo"]["industryIdentifiers"]
-                                [0]["identifier"], isbn13=response["volumeInfo"]["industryIdentifiers"][1]["identifier"],
-                                title = response["volumeInfo"]["title"], description = response["volumeInfo"]["description"], thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"], user_id = g.user.id)
+        isbn10 = None
+        isbn13 = None
+        thumbnail = None
+        description = None
+        try:
+            isbn10 = response["volumeInfo"]["industryIdentifiers"][0]["identifier"]
+        except KeyError:
+            isbn10 = None
+        try:
+            isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
+        except KeyError:
+            isbn13 = None
+        try:
+            thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"]
+        except KeyError:
+            thumbnail = None
+        try:
+            description = response["volumeInfo"]["description"]
+        except KeyError:
+            description = None
+        try:
+            title = response["volumeInfo"]["title"]
+        except KeyError:
+            title = None
+
+        saved_book = SavedBooks(book_id=response["id"], isbn10=isbn10, isbn13=isbn13,
+                                title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
+
         db.session.add(saved_book)
         db.session.commit()
         print(saved_book)
         return jsonify(response)
+
