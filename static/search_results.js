@@ -64,7 +64,7 @@ function pageResults(items) {
     for (j = i; j < i + 3; j++) {
       if (j == items.length) {
         cardsAndModal.append(cardsContainer);
-        const modal = appendModal(items);
+        const modal = appendModal();
         cardsAndModal.append(modal);
         addCarousel(items);
         return;
@@ -94,7 +94,7 @@ function pageResults(items) {
     }
   }
   cardsAndModal.append(cardsContainer);
-  const modal = appendModal(items);
+  const modal = appendModal();
   cardsAndModal.append(modal);
   addCarousel(items);
 }
@@ -134,7 +134,64 @@ function buildCard(cardInfo, column, index) {
 }
 
 function appendModal() {
-  const $modalMarkup = $(`
+  if (document.getElementById("userLoggedIn")) {
+    const myBooks = document
+      .getElementById("userLoggedIn")
+      .getAttribute("data-user-books");
+    const $modalMarkupLoggedIn = $(`
+<div class="modal fade" id="myModal"  role="dialog" aria-labelledby="exampleModalLabel aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class= "modal-title" id="exampleModalLabel">Page ${currentPage}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!--CAROUSEL CODE GOES HERE-->
+        <!--begin carousel-->
+        <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
+          <div class="carousel-inner" id="carouselInner">
+            <div  id ="containerFluid" >
+            </div>
+          </div>
+          <!--Begin Previous and Next buttons-->
+          <a
+            class="carousel-control-prev"
+            href="#myGallery"
+            role="button"
+            data-slide="prev"
+          >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span></a>
+          <a
+            class="carousel-control-next"
+            href="#myGallery"
+            role="button"
+            data-slide="next"
+          >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span></a>
+          <!--end carousel-->
+        </div>
+        <!--end modal-body-->
+      </div>
+      <div class="modal-footer d-flex flex-row justify-content-around">
+            <a href = ${myBooks}>
+               <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
+            </a>
+            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+        <!--end modal-footer-->
+      </div>
+      <!--end modal-content-->
+    </div>
+  </div>
+</div>`);
+
+    return $modalMarkupLoggedIn;
+  } else {
+    const $modalMarkupLoggedOut = $(`
 <div class="modal fade" id="myModal"  role="dialog" aria-labelledby="exampleModalLabel aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -175,7 +232,6 @@ function appendModal() {
       </div>
       <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
@@ -183,7 +239,8 @@ function appendModal() {
   </div>
 </div>`);
 
-  return $modalMarkup;
+    return $modalMarkupLoggedOut;
+  }
 }
 
 function addCarousel(items) {
@@ -240,87 +297,75 @@ function addCarousel(items) {
     }
 
     if (document.getElementById("userLoggedIn")) {
-      const myBooks = document
-        .getElementById("userLoggedIn")
-        .getAttribute("data-user-books");
       const userID = document
         .getElementById("userLoggedIn")
         .getAttribute("data-user-id");
       const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row justify-content-center">
-                            <div class = "col-8">
+                            <div class = "col-8 d-flex justify-content-center">
                               <img class = "cardImgSize" src=${img} alt="item${i}">
                             </div>                     
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-12">
+                            <div id = "carouselCaptionDiv" class = "col-12 text-center">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
                                   <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                            <div class = "col-12 text-center">
                                 <div>Average Rating: ${averageRating}
                                 </div>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                            <div class = "col-12 text-center">
                                 <div>ISBN-13: ${isbn13}
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                        <div class = "row justify-content-around carousel-row">
+                            <div class = "col-3">
                                   <a href = ${items[i].volumeInfo.infoLink}>
-                                    <button class = "btn btn-success">Learn More</button>
+                                    <button class = "btn btn-info">Learn More</button>
                                   </a>
                             </div>
-                        </div>
-                      <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
-                                  <a href = ${myBooks}>
-                                    <button class = "btn btn-primary">My books</button>
-                                  </a>
-                            </div>
-                        </div>
-                      <div class = "row justify-content-start carousel-row">
-                            <div class = "col-6">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Save to your books</button>
+                            <div class = "col-3">
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success saveBooks">Save Book</button>
                             </div>
                         </div>
                     </div>
 `);
       holder.append(infoLoggedIn);
     } else {
-      const infoLoggedOut = $(`<div class="carousel-item" data-card-clicked = ${i}> 
+      const infoLoggedOut = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row justify-content-center carousel-row">
-                            <div class = "col-8">
+                            <div class = "col-8 d-flex justify-content-center">
                               <img src=${img} alt="item${i}">
                             </div>                     
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-12">
+                            <div id = "carouselCaptionDiv" class = "col-12 text-center">
                                   <h3 class="modalTitle">${items[i].volumeInfo.title}</h3>
                                   <h6>${authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                            <div class = "col-12 text-center">
                                 <div> Average Rating: ${averageRating}
                                 </div>
                             </div>
                         </div>
                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                            <div class = "col-12 text-center">
                                 <div> ISBN-13: ${isbn13}
                                 </div>
                             </div>
                         </div>
                         <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12">
+                            <div class = "col-12 d-flex justify-content-center">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-success">Learn More</button>
                                   </a>
@@ -340,12 +385,16 @@ function addCarousel(items) {
 function saveBooks(i) {
   const saveBook = document.getElementById(`saveBook${i}`);
   saveBook.addEventListener("click", async function () {
+    if (saveBook.innerText == "Book Saved") {
+      return;
+    }
     const bookID = saveBook.getAttribute("data-save-book");
     console.log(bookID);
     const userID = saveBook.getAttribute("data-user-id");
     response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
       id: bookID,
     });
+    saveBook.innerText = "Book Saved";
     console.log(response);
   });
 }

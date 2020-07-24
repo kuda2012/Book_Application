@@ -23,7 +23,10 @@ document.getElementById("last").addEventListener("click", function () {
 });
 
 function nextPage(items) {
-  currentPage += 1;
+  if (numberOfPages != currentPage) {
+    currentPage += 1;
+  }
+
   loadList(items);
 }
 
@@ -43,9 +46,13 @@ function lastPage(items) {
 }
 
 function loadList(items) {
+  // console.log(currentPage, numberPerPage, numberOfPages);
   var begin = (currentPage - 1) * numberPerPage;
   var end = begin + numberPerPage;
+  // console.log(begin, end);
+
   pageResults(items.slice(begin, end));
+
   check();
 }
 function check() {

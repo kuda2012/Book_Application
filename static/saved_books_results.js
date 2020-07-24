@@ -13,7 +13,7 @@ var resp = null;
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   resp = await axios.get("http://127.0.0.1:5000/API/users/1/books");
-  console.log(resp);
+  // console.log(resp);
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
 });
@@ -90,6 +90,7 @@ function pageResults(items) {
       //   bookCard.setAttribute("data-isbn-10", "N/A");
       // }
       bookCard.setAttribute("id", items[j].id);
+      // bookCard.setAttribute("data-backdrop", "false");
       bookCard.setAttribute("data-toggle", "modal");
       bookCard.setAttribute("data-target", "#myModal");
       buildCard(items[j], bookCard, j);
@@ -139,7 +140,11 @@ function buildCard(cardInfo, column, index) {
 }
 
 function appendModal() {
-  const $modalMarkup = $(`
+  if (document.getElementById("userLoggedIn")) {
+    const myBooks = document
+      .getElementById("userLoggedIn")
+      .getAttribute("data-user-books");
+    const $modalMarkupLoggedIn = $(`
 <div class="modal fade" id="myModal"  role="dialog" aria-labelledby="exampleModalLabel aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -154,41 +159,27 @@ function appendModal() {
         <!--begin carousel-->
         <div id="myGallery" class="carousel slide" data-interval="false" data-ride="carousel">
           <div class="carousel-inner" id="carouselInner">
-            <div class="container-fluid" id ="containerFluid">
-              </div>
+            <div  id ="containerFluid" >
+            </div>
           </div>
           <!--Begin Previous and Next buttons-->
-          <a
-            class="carousel-control-prev"
-            href="#myGallery"
-            role="button"
-            data-slide="prev"
-          >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span></a>
-          <a
-            class="carousel-control-next"
-            href="#myGallery"
-            role="button"
-            data-slide="next"
-          >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span></a>
           <!--end carousel-->
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </button>
+      <div class="modal-footer d-flex flex-row justify-content-around">
+            <a href = ${myBooks}>
+               <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
+            </a>
+            <button type="button" class="btn btn-danger" id = "closeButtonFooter" data-dismiss="modal">Close</button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
     </div>
   </div>
 </div>`);
-
-  return $modalMarkup;
+    return $modalMarkupLoggedIn;
+  }
 }
 
 function addCarousel(items) {
@@ -196,19 +187,44 @@ function addCarousel(items) {
   var img;
   var paragraph;
   var authors = "";
+  var averageRating = "";
+  var isbn13;
+  var replace_1;
   for (let i = 0; i < items.length; i++) {
     img = items[i].thumbnail;
     paragraph = items[i].description;
     if (items[i].authors) {
       // console.log(items[i].authors);
-      var replace_1 = items[i].authors.replace(/{/g, "[");
-      // console.log(replace_1);
-      replace_1 = replace_1.replace(/}/g, "]");
-      // console.log(replace_1);
-      // replace_1 = `${replace_1}`;
-      authors = JSON.parse(replace_1);
+      // console.log(items[i].authors.search(/{"/gi));
+      if (items[i].authors.search(/{"/gi) == 0) {
+        replace_1 = items[i].authors.replace(/{/g, "[");
+        replace_1 = replace_1.replace(/}/g, "]");
+        authors = replace_1;
+        authors = JSON.parse(authors);
+        authors = authors.reverse();
+        // console.log(authors);
+      } else if (items[i].authors.search(/{/gi) == 0) {
+        replace_1 = items[i].authors.replace(/{/g, `["`);
+        replace_1 = replace_1.replace(/}/g, `"]`);
+        authors = replace_1;
+        authors = JSON.parse(authors);
+        authors = authors.reverse();
+        // console.log(authors);
+      }
+
+      // authors = JSON.parse(authors);
+      // authors = authors.reverse();
+      // try {
+      //   authors = JSON.parse(replace_1);
+      //   authors = authors.reverse();
+      // } catch {
+      //   authors = replace_1;
+      //   console.log(authors);
+      //   // author = JSON.parse(authors);
+      // }
+
       // console.log(authors);
-      authors = authors.reverse();
+
       var spaced_authors = "";
       for (author of authors) {
         if (spaced_authors == "") {
@@ -217,7 +233,23 @@ function addCarousel(items) {
           spaced_authors = author + ", " + spaced_authors;
         }
       }
-      console.log(spaced_authors);
+      try {
+        if (items[i].rating) {
+          averageRating = `${items[i].rating}/5`;
+        } else {
+          averageRating = "N/A";
+        }
+      } catch (err) {
+        averageRating = "N/A";
+      }
+      try {
+        if (items[i].isbn13) {
+          isbn13 = `${items[i].isbn13}`;
+        }
+      } catch (err) {
+        isbn13 = "N/A";
+      }
+      // console.log(spaced_authors);
 
       // var regex = /"(.*?)"/;
       // authors = items[i].authors.match(regex);
@@ -238,82 +270,104 @@ function addCarousel(items) {
       const userID = document
         .getElementById("userLoggedIn")
         .getAttribute("data-user-id");
-      const infoLoggedIn = $(`<div class="carousel-item" data-card-clicked = ${i}> 
-                        <div class="row justify-content-center carousel-row">
-                            <div class = "col-md-8">
-                              <img class = "cardImgSize" src=${img} alt="item${i}">
-                            </div>                     
+      const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
+                        <div class="row carousel-row">
+                              <div class = "col-3 d-flex justify-content-center">
+                                    <a
+                                        class="carousel-control-prev"
+                                        href="#myGallery"
+                                        role="button"
+                                       data-slide="prev" >
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                       <span class="sr-only">Previous</span>
+                                    </a>
+                              </div>  
+
+                              <div class = "col-6 d-flex justify-content-center">
+                                <img class = "cardImgSize" src=${img} alt="item${i}">
+                              </div>  
+                              <div class = "col-3 d-flex justify-content-center">
+                                  <a
+                                    class="carousel-control-next"
+                                    href="#myGallery"
+                                    role="button"
+                                    data-slide="next"
+                                  >
+                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span class="sr-only">Next</span>
+                                    </a>      
+                              </div>                
                         </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-md-12">
+                        <div class = "row carousel-row">
+                            <div id = "carouselCaptionDiv" class = "col-12 text-center">
                                   <h3 class="modalTitle">${items[i].title}</h3>
                                   <h6>${spaced_authors}</h6>
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
+                        <div class = "row  carousel-row">
+                            <div class = "col-12 text-center">
+                                <div>Average Rating: ${averageRating}
+                                </div>
+                            </div>
+                        </div>
+                       <div class = "row  carousel-row">
+                            <div class = "col-12 text-center">
+                                <div>ISBN-13: ${isbn13}
+                                </div>
+                            </div>
+                        </div>
+                        <div class = "row  carousel-row">
+                            <div class = "col-12 text-center">
                                   <a href = ${items[i].info}>
                                     <button class = "btn btn-success">Learn More</button>
                                   </a>
                             </div>
                         </div>
-                      <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
-                                  <a href = ${myBooks}>
-                                    <button class = "btn btn-primary">My books</button>
-                                  </a>
-                            </div>
-                        </div>
-                      <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Save to your books</button>
+                      <div class = "row  carousel-row">
+                            <div class = "col-12 text-center">
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Remove from Saved Books</button>
                             </div>
                         </div>
                     </div>
 `);
       holder.append(infoLoggedIn);
-    } else {
-      const infoLoggedOut = $(`<div class="carousel-item" data-card-clicked = ${i}> 
-                        <div class="row justify-content-center carousel-row">
-                            <div class = "col-md-8">
-                              <img src=${img} alt="item${i}">
-                            </div>                     
-                        </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div id = "carouselCaptionDiv" class = "col-md-12">
-                                  <h3 class="modalTitle">${items[i].title}</h3>
-                                  <h6>${spaced_authors}</h6>
-                                  <p class = "modalParagraph">${paragraph}</p>
-                            </div>
-                        </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-md-12">
-                                  <a href = ${items[i].info}>
-                                    <button class = "btn btn-success">Learn More</button>
-                                  </a>
-                            </div>
-                        </div>
-                    </div>
-`);
-
-      holder.append(infoLoggedOut);
     }
     if (document.getElementById("userLoggedIn")) {
-      saveBooks(i);
+      removeBooks(i);
     }
   }
 }
 
-function saveBooks(i) {
-  const saveBook = document.getElementById(`saveBook${i}`);
-  saveBook.addEventListener("click", async function () {
-    const bookID = saveBook.getAttribute("data-save-book");
-    console.log(bookID);
-    const userID = saveBook.getAttribute("data-user-id");
-    response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
+function removeBooks(i) {
+  const deleteBook = document.getElementById(`saveBook${i}`);
+  deleteBook.addEventListener("click", async function () {
+    if (deleteBook.innerText == "Book Deleted") {
+      return;
+    }
+    const bookID = deleteBook.getAttribute("data-save-book");
+    // console.log(bookID);
+    const userID = deleteBook.getAttribute("data-user-id");
+    response = await axios.post(`${BASE_URL_USERS}/${userID}/books/delete`, {
       id: bookID,
     });
-    console.log(response);
+    deleteBook.innerText = "Book Deleted";
+    // console.log(response);
+    removeBookHTML(bookID);
   });
+}
+
+function removeBookHTML(id) {
+  const carouselItem = Array.from(document.getElementsByClassName("active"));
+  carouselItem[0].remove();
+  const bookCard = document.getElementById(id);
+  bookCard.click();
+  bookCard.remove();
+  for (let i = 0; i < resp.data.length; i++) {
+    if (resp.data[i].id == id) {
+      resp.data.splice(i, 1);
+    }
+  }
+  numberOfPages = getNumberOfPages(resp.data);
+  //   console.log(resp);
 }

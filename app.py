@@ -351,7 +351,6 @@ def add_books(user_id):
     resp = requests.get(
         f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
     response = resp.json()
-    print(response["volumeInfo"]["authors"])
     isbn13 = None
     thumbnail = None
     description = None
@@ -398,3 +397,21 @@ def add_books(user_id):
     db.session.commit()
     print(saved_book)
     return jsonify(response)
+
+
+@app.route("/users/<user_id>/books/delete", methods=["POST"])
+def delete_book(user_id):
+    """Add book to saved books"""
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+    # print(request.json["bookID"])
+    # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
+    user_book = SavedBooks.query.filter_by(id=request.json["id"]).one_or_none()
+    print(user_book)
+    if user_book:
+        db.session.delete(user_book)
+        db.session.commit()
+        return jsonify("Book has been deleted")
+    else:
+        return "Book has already been deleted"
