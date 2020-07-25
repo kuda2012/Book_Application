@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 from flask_bcrypt import Bcrypt
+from sqlalchemy.dialects.postgresql import ARRAY
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -101,7 +102,7 @@ class SavedBooks(db.Model):
     title = db.Column(db.String, index=True, default = "The title of this book is not available")
     rating = db.Column(db.String, default="N/A")
     info = db.Column(db.String, default="N/A")
-    authors = db.Column(db.String, default = "N/A")
+    authors = db.Column((ARRAY(db.String)), default = "N/A")
     description = db.Column(db.String, default = "A description of this book is not available")
     thumbnail = db.Column(db.String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

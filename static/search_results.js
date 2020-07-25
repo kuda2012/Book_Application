@@ -9,11 +9,16 @@ const BASE_URL_GOOGLE_BOOKS_API =
   "https://www.googleapis.com/books/v1/volumes?";
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
+const flashContainer = document.getElementById("flashContainer");
 
 var resp = null;
 
 searchForm.addEventListener("submit", async (evt) => {
   evt.preventDefault();
+  if (flashContainer) {
+    flashContainer.innerHTML = "";
+  }
+
   parameters = {};
   if (searchInput.value) {
     parameters["q"] = searchInput.value;
@@ -157,27 +162,11 @@ function appendModal() {
             </div>
           </div>
           <!--Begin Previous and Next buttons-->
-          <a
-            class="carousel-control-prev"
-            href="#myGallery"
-            role="button"
-            data-slide="prev"
-          >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span></a>
-          <a
-            class="carousel-control-next"
-            href="#myGallery"
-            role="button"
-            data-slide="next"
-          >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span></a>
           <!--end carousel-->
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer d-flex flex-row justify-content-around">
+      <div class="modal-footer d-flex flex-row justify-content-between">
             <a href = ${myBooks}>
                <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
             </a>
@@ -210,22 +199,6 @@ function appendModal() {
             </div>
           </div>
           <!--Begin Previous and Next buttons-->
-          <a
-            class="carousel-control-prev"
-            href="#myGallery"
-            role="button"
-            data-slide="prev"
-          >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span></a>
-          <a
-            class="carousel-control-next"
-            href="#myGallery"
-            role="button"
-            data-slide="next"
-          >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span></a>
           <!--end carousel-->
         </div>
         <!--end modal-body-->
@@ -247,11 +220,13 @@ function addCarousel(items) {
   const holder = $(`#containerFluid`);
   var img;
   var paragraph;
-  var authors = "";
+
   var averageRating = "";
   var isbn13;
+  var amazonSearch;
 
   for (let i = 0; i < items.length; i++) {
+    var authors = "";
     try {
       if (items[i].volumeInfo.imageLinks) {
         img = items[i].volumeInfo.imageLinks.smallThumbnail;
@@ -284,16 +259,24 @@ function addCarousel(items) {
     }
     try {
       if (items[i].volumeInfo.authors) {
-        authors = items[i].volumeInfo.authors;
-        // for (let j = 0; j < items[i].volumeInfo.authors.length; j++) {
-        //   if (authors == "") {
-        //   } else {
-        //     authors = authors + ", " + items[i].volumeInfo.authors[j];
-        //   }
-        // }
+        for (let j = 0; j < items[i].volumeInfo.authors.length; j++) {
+          if (authors == "") {
+            authors = items[i].volumeInfo.authors[j];
+          } else {
+            authors = authors + ", " + items[i].volumeInfo.authors[j];
+          }
+        }
+      } else {
+        authors = "N/A";
       }
     } catch {
       authors = "N/A";
+    }
+    if (authors == "N/A") {
+      amazonSearch = items[i].volumeInfo.title + " book";
+    } else {
+      amazonSearch =
+        items[i].volumeInfo.title + " " + items[i].volumeInfo.authors[0];
     }
 
     if (document.getElementById("userLoggedIn")) {
@@ -302,9 +285,31 @@ function addCarousel(items) {
         .getAttribute("data-user-id");
       const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row justify-content-center">
-                            <div class = "col-8 d-flex justify-content-center">
-                              <img class = "cardImgSize" src=${img} alt="item${i}">
-                            </div>                     
+                              <div class = "col-3 d-flex justify-content-center">
+                                    <a
+                                        class="carousel-control-prev"
+                                        href="#myGallery"
+                                        role="button"
+                                       data-slide="prev" >
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                       <span class="sr-only">Previous</span>
+                                    </a>
+                              </div>  
+
+                              <div class = "col-6 d-flex justify-content-center">
+                                <img class = "cardImgSize" src=${img} alt="item${i}">
+                              </div>  
+                              <div class = "col-3 d-flex justify-content-center">
+                                  <a
+                                    class="carousel-control-next"
+                                    href="#myGallery"
+                                    role="button"
+                                    data-slide="next"
+                                  >
+                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span class="sr-only">Next</span>
+                                    </a>      
+                              </div>                
                         </div>
                         <div class = "row justify-content-center carousel-row">
                             <div id = "carouselCaptionDiv" class = "col-12 text-center">
@@ -325,7 +330,7 @@ function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-around carousel-row">
+                        <div class = "row justify-content-between carousel-row">
                             <div class = "col-3">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-info">Learn More</button>
@@ -334,6 +339,13 @@ function addCarousel(items) {
                             <div class = "col-3">
                                     <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success saveBooks">Save Book</button>
                             </div>
+                            <div class = "col-3">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
+                                  method="get">
+                                <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
+                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                </FORM>
+                            </div>                           
                         </div>
                     </div>
 `);
@@ -341,9 +353,31 @@ function addCarousel(items) {
     } else {
       const infoLoggedOut = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row justify-content-center carousel-row">
-                            <div class = "col-8 d-flex justify-content-center">
-                              <img src=${img} alt="item${i}">
-                            </div>                     
+                              <div class = "col-3 d-flex justify-content-center">
+                                    <a
+                                        class="carousel-control-prev"
+                                        href="#myGallery"
+                                        role="button"
+                                       data-slide="prev" >
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                       <span class="sr-only">Previous</span>
+                                    </a>
+                              </div>  
+
+                              <div class = "col-6 d-flex justify-content-center">
+                                <img class = "cardImgSize" src=${img} alt="item${i}">
+                              </div>  
+                              <div class = "col-3 d-flex justify-content-center">
+                                  <a
+                                    class="carousel-control-next"
+                                    href="#myGallery"
+                                    role="button"
+                                    data-slide="next"
+                                  >
+                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span class="sr-only">Next</span>
+                                    </a>      
+                              </div>                
                         </div>
                         <div class = "row justify-content-center carousel-row">
                             <div id = "carouselCaptionDiv" class = "col-12 text-center">
@@ -364,12 +398,20 @@ function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-center carousel-row">
-                            <div class = "col-12 d-flex justify-content-center">
+                        <div class = "row justify-content-around carousel-row">
+                            <div class = "col-3 d-flex justify-content-center">
                                   <a href = ${items[i].volumeInfo.infoLink}>
                                     <button class = "btn btn-success">Learn More</button>
                                   </a>
                             </div>
+                            <div class = "col-3">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
+                                  method="get">
+                                <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
+                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                </FORM>
+                            </div>                           
+                        </div>
                         </div>
                     </div>
 `);

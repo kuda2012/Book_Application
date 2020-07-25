@@ -51,17 +51,19 @@
 } */
 #bookButtonFooter {
   width: 85px;
-  margin-left: 7px;
-  margin-right: 10px;
+  margin-left: 73px;
 }
 #closeButtonFooter {
   width: 85px;
   height: 60px;
-  margin-right: 7px;
-  margin-left: 10px;
+  margin-right: 74px;
 }
-/* .carousel-control-prev-icon,
-.carousel-control-next-icon {
-  position: relative;
-  top: -200px;
-} */
+
+.deleteBooks {
+  height: 85px;
+  font-size: small;
+}
+#closeButtonFooterSaved {
+  width: 85px;
+  height: 60px;
+}

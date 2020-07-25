@@ -13,7 +13,7 @@ var resp = null;
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   resp = await axios.get("http://127.0.0.1:5000/API/users/1/books");
-  // console.log(resp);
+  console.log(resp);
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
 });
@@ -167,11 +167,8 @@ function appendModal() {
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer d-flex flex-row justify-content-around">
-            <a href = ${myBooks}>
-               <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
-            </a>
-            <button type="button" class="btn btn-danger" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+      <div class="modal-footer d-flex flex-row justify-content-center">
+            <button type="button" class="btn btn-danger" id = "closeButtonFooterSaved" data-dismiss="modal">Close</button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
@@ -186,87 +183,53 @@ function addCarousel(items) {
   const holder = $(`#containerFluid`);
   var img;
   var paragraph;
-  var authors = "";
   var averageRating = "";
   var isbn13;
-  var replace_1;
+  var amazonSearch;
+
   for (let i = 0; i < items.length; i++) {
     img = items[i].thumbnail;
     paragraph = items[i].description;
-    if (items[i].authors) {
-      // console.log(items[i].authors);
-      // console.log(items[i].authors.search(/{"/gi));
-      if (items[i].authors.search(/{"/gi) == 0) {
-        replace_1 = items[i].authors.replace(/{/g, "[");
-        replace_1 = replace_1.replace(/}/g, "]");
-        authors = replace_1;
-        authors = JSON.parse(authors);
-        authors = authors.reverse();
-        // console.log(authors);
-      } else if (items[i].authors.search(/{/gi) == 0) {
-        replace_1 = items[i].authors.replace(/{/g, `["`);
-        replace_1 = replace_1.replace(/}/g, `"]`);
-        authors = replace_1;
-        authors = JSON.parse(authors);
-        authors = authors.reverse();
-        // console.log(authors);
-      }
-
-      // authors = JSON.parse(authors);
-      // authors = authors.reverse();
-      // try {
-      //   authors = JSON.parse(replace_1);
-      //   authors = authors.reverse();
-      // } catch {
-      //   authors = replace_1;
-      //   console.log(authors);
-      //   // author = JSON.parse(authors);
-      // }
-
-      // console.log(authors);
-
-      var spaced_authors = "";
-      for (author of authors) {
-        if (spaced_authors == "") {
-          spaced_authors = author;
-        } else {
-          spaced_authors = author + ", " + spaced_authors;
+    var spaced_authors = "";
+    try {
+      if (items[i].authors) {
+        for (author of items[i].authors) {
+          if (spaced_authors == "") {
+            spaced_authors = author;
+          } else {
+            spaced_authors = author + ", " + spaced_authors;
+          }
         }
+      } else {
+        spaced_authors = "N/A";
       }
-      try {
-        if (items[i].rating) {
-          averageRating = `${items[i].rating}/5`;
-        } else {
-          averageRating = "N/A";
-        }
-      } catch (err) {
+    } catch {
+      spaced_authors = "N/A";
+    }
+    if (spaced_authors == "N/A") {
+      amazonSearch = items[i].volumeInfo.title + " book";
+    } else {
+      amazonSearch = items[i].title + " " + items[i].authors[0];
+    }
+
+    try {
+      if (items[i].rating != "N/A") {
+        averageRating = `${items[i].rating}/5`;
+      } else {
         averageRating = "N/A";
       }
-      try {
-        if (items[i].isbn13) {
-          isbn13 = `${items[i].isbn13}`;
-        }
-      } catch (err) {
-        isbn13 = "N/A";
+    } catch (err) {
+      averageRating = "N/A";
+    }
+    try {
+      if (items[i].isbn13) {
+        isbn13 = `${items[i].isbn13}`;
       }
-      // console.log(spaced_authors);
-
-      // var regex = /"(.*?)"/;
-      // authors = items[i].authors.match(regex);
-
-      // console.log(authors);
-      // for (let j = 0; j < items[i].authors.length; j++) {
-      //   if (authors == "") {
-      //   } else {
-      //     authors = authors + ", " + items[i].authors[j];
-      //   }
-      // }
+    } catch (err) {
+      isbn13 = "N/A";
     }
 
     if (document.getElementById("userLoggedIn")) {
-      const myBooks = document
-        .getElementById("userLoggedIn")
-        .getAttribute("data-user-books");
       const userID = document
         .getElementById("userLoggedIn")
         .getAttribute("data-user-id");
@@ -317,16 +280,21 @@ function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row  carousel-row">
-                            <div class = "col-12 text-center">
+                        <div class = "row justify-content-around carousel-row">
+                            <div class = "col-3">
                                   <a href = ${items[i].info}>
-                                    <button class = "btn btn-success">Learn More</button>
+                                    <button class = "btn btn-info">Learn More</button>
                                   </a>
                             </div>
-                        </div>
-                      <div class = "row  carousel-row">
-                            <div class = "col-12 text-center">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-primary">Remove from Saved Books</button>
+                            <div class = "col-3">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
+                                  method="get">
+                                <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
+                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                </FORM>
+                            </div>                           
+                            <div class = "col-3">
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success deleteBooks ">Remove from Saved Books</button>
                             </div>
                         </div>
                     </div>
@@ -369,5 +337,8 @@ function removeBookHTML(id) {
     }
   }
   numberOfPages = getNumberOfPages(resp.data);
+  if (resp.data.length == 0) {
+    window.location.href = "/";
+  }
   //   console.log(resp);
 }
