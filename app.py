@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgres:///book_db'))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 
@@ -315,7 +315,32 @@ def show_books_api(user_id):
         # print(type(book))
         books_array.append(book.serialize())
         # print(books_array)
+    return jsonify(books_array)
 
+
+@app.route("/users/<user_id>/books/filter", methods=["GET"])
+def filter_books(user_id):
+    """Filter saved books"""
+    from sqlalchemy import or_, func as F
+    if not g.user:
+        flash("Must be logged in to access this", 'danger')
+        return redirect("/")
+    # query_terms = request.args.get("query").split()
+
+    # print(query_terms)
+
+    query = request.args.get("query")
+    books_array = []
+    # search_books = SavedBooks.query.filter(SavedBooks.authors.any(f'{query}')).all()
+    # search_books = SavedBooks.query.filter(F.array_to_string(SavedBooks.authors, ',').like(f'{query}')).all()
+    # search_books = SavedBooks.query.filter(SavedBooks.authors.like(any_(f'{query}'))).all()
+    search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'), SavedBooks.authors.any(f'{query}'))).all()
+    
+    for book in search_books:
+    # print(type(book))
+        books_array.append(book.serialize())
+
+    # search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'),F.array_to_string(SavedBooks.authors, ',').ilike(f'{query}'),)).all()  
     
     return jsonify(books_array)
 
@@ -352,8 +377,9 @@ def add_books(user_id):
     if user_book:
         return "You've already saved this book"
     resp = requests.get(
-        f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
+        f'{BASE_URL}', params = {'q':request.json["id"]})
     response = resp.json()
+    # print(response['items'][0]["volumeInfo"]['description'])
     isbn13 = None
     thumbnail = None
     description = None
@@ -362,37 +388,34 @@ def add_books(user_id):
     authors = None
 
     try:
-        isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
+        isbn13 = response['items'][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]
     except KeyError:
         isbn13 = None
     try:
-        thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"]
+        thumbnail = response['items'][0]["volumeInfo"]["imageLinks"]["smallThumbnail"]
     except KeyError:
         thumbnail = None
     try:
-        description = response["volumeInfo"]["description"]
+        description = response['items'][0]["volumeInfo"]['description']
     except KeyError:
         description = None
     try:
-        title = response["volumeInfo"]["title"]
+        title = response['items'][0]["volumeInfo"]["title"]
     except KeyError:
         title = None
     try:
-        rating = response["volumeInfo"]["averageRating"]
+        rating = response['items'][0]["volumeInfo"]["averageRating"]
     except KeyError:
         rating = None
     try:
-        info = response["volumeInfo"]["infoLink"]
+        info = response['items'][0]["volumeInfo"]["infoLink"]
     except KeyError:
-        info = none
+        info = None
     try:
-        authors = response["volumeInfo"]["authors"]
-        print(authors)
-        for author in authors:
-            print(author)
+        authors = response['items'][0]["volumeInfo"]["authors"]
     except KeyError:
         authors = None
-    saved_book = SavedBooks(id=response["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
+    saved_book = SavedBooks(id=response['items'][0]["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
                             title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
     db.session.add(saved_book)

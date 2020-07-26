@@ -80,14 +80,6 @@ function pageResults(items) {
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
       const bookCard = document.createElement("div");
-      // try {
-      //   bookCard.setAttribute(
-      //     "data-isbn-10",
-      //     items[j].volumeInfo.industryIdentifiers[0].identifier
-      //   );
-      // } catch (err) {
-      //   bookCard.setAttribute("data-isbn-10", "N/A");
-      // }
       bookCard.setAttribute("id", items[j].id);
       bookCard.setAttribute("data-toggle", "modal");
       bookCard.setAttribute("data-target", "#myModal");
@@ -124,7 +116,6 @@ function buildCard(cardInfo, column, index) {
   column.append(cardTitle);
 
   column.addEventListener("click", function () {
-    // document.getElementById("cardsAndModal").classList.toggle("container");
     const carouselItems = document.querySelectorAll(`.carousel-item`);
     for (let i = 0; i < carouselItems.length; i++) {
       if (carouselItems[i].classList.contains(`active`)) {

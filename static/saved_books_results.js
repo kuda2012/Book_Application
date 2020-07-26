@@ -8,54 +8,65 @@ const BASE_URL_GOOGLE_BOOKS_API =
   "https://www.googleapis.com/books/v1/volumes?";
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
-
+const submitButton = document.getElementById("submitButton");
+const showSavedBooks = document.getElementById("showSavedBooks");
+const userID = document
+  .getElementById("userLoggedIn")
+  .getAttribute("data-user-id");
+var resp_holder = null;
 var resp = null;
 
 window.addEventListener("DOMContentLoaded", async (event) => {
-  resp = await axios.get("http://127.0.0.1:5000/API/users/1/books");
+  resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
   console.log(resp);
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
 });
 
-// searchForm.addEventListener("submit", async (evt) => {
-//   evt.preventDefault();
-//   parameters = {};
-//   if (searchInput.value) {
-//     parameters["q"] = searchInput.value;
-//   }
-//   if (categoryInput.value) {
-//     parameters["subject"] = categoryInput.value;
-//   }
-//   if (orderByInput.value) {
-//     parameters["orderBy"] = orderByInput.value;
-//   }
-//   if (previewInput.value) {
-//     parameters["filter"] = previewInput.value;
-//   }
-//   if (searchInput.value == "") {
-//     alert("Please enter an input to search for");
-//     return;
-//   }
-//   parameters["maxResults"] = 40;
-//   resp = await axios.get(BASE_URL_GOOGLE_BOOKS_API, {
-//     params: parameters,
-//   });
-//   if (resp.data.items == null) {
-//     alert("Could not find any results, try a different entry");
-//     searchInput.value = "";
-//     return;
-//   }
+searchForm.addEventListener("submit", async (evt) => {
+  resp_holder = null;
+  evt.preventDefault();
+  if (flashContainer) {
+    flashContainer.innerHTML = "";
+  }
 
-//   searchInput.value = "";
-//   orderByInput.value = "";
-//   previewInput.value = "";
-//   categoryInput.value = "";
+  parameters = {};
+  if (searchInput.value) {
+    parameters["q"] = searchInput.value;
+  }
+  if (searchInput.value == "") {
+    alert("Please enter an input to search for");
+    return;
+  }
+  console.log(searchInput.value);
+  resp_holder = resp;
+  resp = await axios.get(`${BASE_URL_USERS}/${userID}/books/filter?`, {
+    params: { query: searchInput.value },
+  });
+  // console.log(response);
+  if (resp.data == null) {
+    alert("Could not find any results, try a different entry");
+    searchInput.value = "";
+    return;
+  }
 
-//   console.log(resp);
-//   numberOfPages = getNumberOfPages(resp.data.items);
-//   firstPage(resp.data.items);
-// });
+  searchInput.value = "";
+
+  console.log(resp);
+  numberOfPages = getNumberOfPages(resp.data);
+  firstPage(resp.data);
+
+  const showSavedBooks = $("<button>Show Saved Books</button>");
+  showSavedBooks.attr({ id: "showSavedBooks", class: "btn btn-secondary" });
+  showSavedBooks.insertAfter($`#searchForm`);
+
+  showSavedBooks.on("click", async (event) => {
+    resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
+    console.log(resp);
+    numberOfPages = getNumberOfPages(resp.data);
+    firstPage(resp.data);
+  });
+});
 
 function pageResults(items) {
   cardsAndModal.innerHTML = "";
@@ -66,7 +77,7 @@ function pageResults(items) {
   }
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
-    newRow.setAttribute("class", "d-flex flex-row justify-content-between");
+    newRow.setAttribute("class", "d-flex flex-row justify-content-around");
     for (j = i; j < i + 3; j++) {
       if (j == items.length) {
         cardsAndModal.append(cardsContainer);
@@ -76,21 +87,13 @@ function pageResults(items) {
         return;
       }
       const newColumn = document.createElement("div");
-      newColumn.setAttribute("class", "col-sm");
+      newColumn.setAttribute("class", "col-sm d-flex justify-content-center");
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
       const bookCard = document.createElement("div");
-      // try {
-      //   bookCard.setAttribute(
-      //     "data-isbn-10",
-      //     items[j].volumeInfo.industryIdentifiers[0].identifier
-      //   );
-      // } catch (err) {
-      //   bookCard.setAttribute("data-isbn-10", "N/A");
-      // }
+
       bookCard.setAttribute("id", items[j].id);
-      // bookCard.setAttribute("data-backdrop", "false");
       bookCard.setAttribute("data-toggle", "modal");
       bookCard.setAttribute("data-target", "#myModal");
       buildCard(items[j], bookCard, j);
@@ -210,6 +213,9 @@ function addCarousel(items) {
       amazonSearch = items[i].volumeInfo.title + " book";
     } else {
       amazonSearch = items[i].title + " " + items[i].authors[0];
+      console.log(amazonSearch);
+      amazonSearch = amazonSearch.replace(/['"]+/g, "");
+      console.log(amazonSearch);
     }
 
     try {
@@ -230,9 +236,6 @@ function addCarousel(items) {
     }
 
     if (document.getElementById("userLoggedIn")) {
-      const userID = document
-        .getElementById("userLoggedIn")
-        .getAttribute("data-user-id");
       const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row carousel-row">
                               <div class = "col-3 d-flex justify-content-center">
@@ -315,17 +318,19 @@ function removeBooks(i) {
     }
     const bookID = deleteBook.getAttribute("data-save-book");
     // console.log(bookID);
-    const userID = deleteBook.getAttribute("data-user-id");
-    response = await axios.post(`${BASE_URL_USERS}/${userID}/books/delete`, {
-      id: bookID,
-    });
+    const response = await axios.post(
+      `${BASE_URL_USERS}/${userID}/books/delete`,
+      {
+        id: bookID,
+      }
+    );
     deleteBook.innerText = "Book Deleted";
     // console.log(response);
     removeBookHTML(bookID);
   });
 }
 
-function removeBookHTML(id) {
+async function removeBookHTML(id) {
   const carouselItem = Array.from(document.getElementsByClassName("active"));
   carouselItem[0].remove();
   const bookCard = document.getElementById(id);
@@ -337,8 +342,20 @@ function removeBookHTML(id) {
     }
   }
   numberOfPages = getNumberOfPages(resp.data);
-  if (resp.data.length == 0) {
-    window.location.href = "/";
+
+  if (currentPage > numberOfPages) {
+    currentPage = numberOfPages;
   }
-  //   console.log(resp);
+  loadList(resp.data);
+
+  if (resp.data.length == 0 && resp_holder.data.length == 0) {
+    window.location.href = "/";
+  } else if (resp.data.length == 0) {
+    window.location.href = "/";
+  } else if (resp.data.length == 0 && resp_holder.data.length > 0) {
+    resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
+    console.log(resp);
+    numberOfPages = getNumberOfPages(resp.data);
+    firstPage(resp.data);
+  }
 }
