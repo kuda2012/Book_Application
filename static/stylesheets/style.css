@@ -2,8 +2,6 @@
   width: 150px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 .cardImgSize {
   width: 150px;
@@ -51,19 +49,21 @@
 } */
 #bookButtonFooter {
   width: 85px;
-  margin-left: 73px;
+  /* margin-left: 73px; */
 }
 #closeButtonFooter {
   width: 85px;
   height: 60px;
-  margin-right: 74px;
+  /* margin-right: 80px; */
 }
 
 .deleteBooks {
-  height: 85px;
-  font-size: small;
+  height: 65px;
 }
 #closeButtonFooterSaved {
   width: 85px;
   height: 60px;
+}
+#closeButtonDiv {
+  margin-right: 20px;
 }

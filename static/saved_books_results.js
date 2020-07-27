@@ -9,7 +9,6 @@ const BASE_URL_GOOGLE_BOOKS_API =
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const submitButton = document.getElementById("submitButton");
-const showSavedBooks = document.getElementById("showSavedBooks");
 const userID = document
   .getElementById("userLoggedIn")
   .getAttribute("data-user-id");
@@ -19,12 +18,15 @@ var resp = null;
 window.addEventListener("DOMContentLoaded", async (event) => {
   resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
   console.log(resp);
+  resp_holder = resp;
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
 });
 
 searchForm.addEventListener("submit", async (evt) => {
-  resp_holder = null;
+  if (document.getElementById("showSavedBooks")) {
+    document.getElementById("showSavedBooks").remove();
+  }
   evt.preventDefault();
   if (flashContainer) {
     flashContainer.innerHTML = "";
@@ -66,6 +68,7 @@ searchForm.addEventListener("submit", async (evt) => {
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
   });
+  showSavedBooks.remove();
 });
 
 function pageResults(items) {
@@ -77,7 +80,7 @@ function pageResults(items) {
   }
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
-    newRow.setAttribute("class", "d-flex flex-row justify-content-around");
+    newRow.setAttribute("class", "d-flex flex-row");
     for (j = i; j < i + 3; j++) {
       if (j == items.length) {
         cardsAndModal.append(cardsContainer);
@@ -87,7 +90,10 @@ function pageResults(items) {
         return;
       }
       const newColumn = document.createElement("div");
-      newColumn.setAttribute("class", "col-sm d-flex justify-content-center");
+      newColumn.setAttribute(
+        "class",
+        "col-sm d-flex justify-content-center text-center"
+      );
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
@@ -170,8 +176,10 @@ function appendModal() {
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer d-flex flex-row justify-content-center">
-            <button type="button" class="btn btn-danger" id = "closeButtonFooterSaved" data-dismiss="modal">Close</button>
+      <div class="modal-footer flex-row">
+          <div class = "col d-flex justify-content-end" id = "closeButtonDiv">
+            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+          </div>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
@@ -290,15 +298,15 @@ function addCarousel(items) {
                                   </a>
                             </div>
                             <div class = "col-3">
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success deleteBooks ">Remove Book</button>
+                            </div>
+                            <div class = "col-3">
                             <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
                                   method="get">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
                                 <button  class ="btn btn-warning" >Amazon Search</button>
                                 </FORM>
                             </div>                           
-                            <div class = "col-3">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success deleteBooks ">Remove from Saved Books</button>
-                            </div>
                         </div>
                     </div>
 `);

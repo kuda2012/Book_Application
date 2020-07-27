@@ -19,19 +19,18 @@ content%}
         <a class="nav-link" href="/users/{{user.id}}">Profile</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          id="userLoggedIn"
-          data-user-books="users/{{user.id}}/books"
-          data-user-id="{{user.id}}"
-          href="/logout"
-          >Logout ({{user.username}})</a
-        >
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
       </li>
+      <!-- <li class="nav-item"></li> -->
     </ul>
+    <a
+      class="nav-link text-secondary"
+      id="userLoggedIn"
+      data-user-books="users/{{user.id}}/books"
+      data-user-id="{{user.id}}"
+      href="/logout"
+      >Logout ({{user.username}})</a
+    >
   </div>
 </nav>
 
@@ -53,7 +52,7 @@ content%}
     <div class="row">
       <div class="col-8">
         <div class="form-group">
-          {{field.label}}{{field(class_="form-control")}} {%if
+          {{field.label}}{{field(class_="form-control",maxLength = "50")}} {%if
           field.errors%}{%for error in field.errors%}
           <div class="formError bg-warning">{{error}}</div>
           {%endfor%}{%endif%}

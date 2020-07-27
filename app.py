@@ -264,9 +264,6 @@ def edit_password(user_id):
             if form.new_password.data != form.new_password_match.data:
                 flash("New Password inputs did not match, try again", "danger")
                 return redirect(f"users/{user_id}/edit/password")
-            elif form.new_password.data == form.password.data:
-                flash("Current Password entered, Password not changed", "danger")
-                return redirect("/")
             else:
                 user = User.change_password(user, form.new_password.data)
                 flash("Password Changed", "success")
@@ -379,50 +376,87 @@ def add_books(user_id):
     resp = requests.get(
         f'{BASE_URL}', params = {'q':request.json["id"]})
     response = resp.json()
-    # print(response['items'][0]["volumeInfo"]['description'])
     isbn13 = None
     thumbnail = None
     description = None
     rating = None
     info = None
     authors = None
+    try:
+        print(1)
+        try:
+            isbn13 = response['items'][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]
+        except (IndexError, KeyError):
+            isbn13 = None
+        try:
+            thumbnail = response['items'][0]["volumeInfo"]["imageLinks"]["smallThumbnail"]
+        except (IndexError, KeyError):
+            thumbnail = None
+        try:
+            description = response['items'][0]["volumeInfo"]['description']
+        except (IndexError, KeyError):
+            description = None
+        try:
+            title = response['items'][0]["volumeInfo"]["title"]
+        except (IndexError, KeyError):
+            title = None
+        try:
+            rating = response['items'][0]["volumeInfo"]["averageRating"]
+        except (IndexError, KeyError):
+            rating = None
+        try:
+            info = response['items'][0]["volumeInfo"]["infoLink"]
+        except (IndexError, KeyError):
+            info = None
+        try:
+            authors = response['items'][0]["volumeInfo"]["authors"]
+        except (IndexError, KeyError):
+            authors = None
+        saved_book = SavedBooks(id=response["items"][0]['id'], isbn13=isbn13,rating = rating, info = info, authors = authors,
+                                title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
-    try:
-        isbn13 = response['items'][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]
-    except KeyError:
-        isbn13 = None
-    try:
-        thumbnail = response['items'][0]["volumeInfo"]["imageLinks"]["smallThumbnail"]
-    except KeyError:
-        thumbnail = None
-    try:
-        description = response['items'][0]["volumeInfo"]['description']
-    except KeyError:
-        description = None
-    try:
-        title = response['items'][0]["volumeInfo"]["title"]
-    except KeyError:
-        title = None
-    try:
-        rating = response['items'][0]["volumeInfo"]["averageRating"]
-    except KeyError:
-        rating = None
-    try:
-        info = response['items'][0]["volumeInfo"]["infoLink"]
-    except KeyError:
-        info = None
-    try:
-        authors = response['items'][0]["volumeInfo"]["authors"]
-    except KeyError:
-        authors = None
-    saved_book = SavedBooks(id=response['items'][0]["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
-                            title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
+        db.session.add(saved_book)
+        db.session.commit()
+        return jsonify(response)
+    except (IndexError, KeyError):
+        print(2)
+        resp = requests.get(
+        f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
+        response = resp.json()
+        try:
+            isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
+        except (IndexError, KeyError):
+            isbn13 = None
+        try:
+            thumbnail = response["volumeInfo"]["imageLinks"]["smallThumbnail"]
+        except (IndexError, KeyError):
+            thumbnail = None
+        try:
+            description = response["volumeInfo"]['description']
+        except (IndexError, KeyError):
+            description = None
+        try:
+            title = response["volumeInfo"]["title"]
+        except (IndexError, KeyError):
+            title = None
+        try:
+            rating = response["volumeInfo"]["averageRating"]
+        except (IndexError, KeyError):
+            rating = None
+        try:
+            info = response["volumeInfo"]["infoLink"]
+        except (IndexError, KeyError):
+            info = None
+        try:
+            authors = response["volumeInfo"]["authors"]
+        except (IndexError, KeyError):
+            authors = None
+        saved_book = SavedBooks(id=request.json["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
+                                title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
-    db.session.add(saved_book)
-    db.session.commit()
-    print(saved_book.authors)
-    return jsonify(response)
-
+        db.session.add(saved_book)
+        db.session.commit()
+        return jsonify(response)
 
 @app.route("/users/<user_id>/books/delete", methods=["POST"])
 def delete_book(user_id):

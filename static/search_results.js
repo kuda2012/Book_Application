@@ -65,7 +65,7 @@ function pageResults(items) {
   }
   for (i = 0; i < items.length; i += 3) {
     const newRow = document.createElement("div");
-    newRow.setAttribute("class", "d-flex flex-row justify-content-between");
+    newRow.setAttribute("class", "d-flex flex-row");
     for (j = i; j < i + 3; j++) {
       if (j == items.length) {
         cardsAndModal.append(cardsContainer);
@@ -75,7 +75,10 @@ function pageResults(items) {
         return;
       }
       const newColumn = document.createElement("div");
-      newColumn.setAttribute("class", "col-sm");
+      newColumn.setAttribute(
+        "class",
+        "col-sm d-flex justify-content-center text-center"
+      );
       const newAnchor = document.createElement("a");
       newAnchor.setAttribute("href", "#myGallery");
       newAnchor.setAttribute("data-slide-to", j);
@@ -157,7 +160,7 @@ function appendModal() {
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer d-flex flex-row justify-content-between">
+      <div class="modal-footer d-flex flex-row justify-content-around">
             <a href = ${myBooks}>
                <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
             </a>
@@ -194,8 +197,8 @@ function appendModal() {
         </div>
         <!--end modal-body-->
       </div>
-      <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div class="modal-footer d-flex flex-row" id = "closeButtonDiv">
+            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->

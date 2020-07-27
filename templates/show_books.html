@@ -18,19 +18,18 @@
         <a class="nav-link" href="/users/{{user.id}}">Profile</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          id="userLoggedIn"
-          data-user-books="users/{{user.id}}/books"
-          data-user-id="{{user.id}}"
-          href="/logout"
-          >Logout ({{user.username}})</a
-        >
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
       </li>
+      <!-- <li class="nav-item"></li> -->
     </ul>
+    <a
+      class="nav-link text-secondary"
+      id="userLoggedIn"
+      data-user-books="users/{{user.id}}/books"
+      data-user-id="{{user.id}}"
+      href="/logout"
+      >Logout ({{user.username}})</a
+    >
   </div>
 </nav>
 
@@ -44,16 +43,14 @@
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
     <div class="form-group">
-      {{field.label}} {{field}} {%if field.errors%}{%for error in field.errors%}
+      {{field.label}} {{field(maxLength = "100")}} {%if field.errors%}{%for
+      error in field.errors%}
       <div class="formError bg-warning">{{error}}</div>
       {%endfor%}{%endif%}
     </div>
     {%endfor%}
     <button class="btn btn-primary" id="submitButton">Submit</button>
   </form>
-  <!-- <button class="btn btn-secondary" id="showSavedBooks">
-    Show all Saved Books
-  </button> -->
 </div>
 
 <div class="container" id="cardsAndModal">

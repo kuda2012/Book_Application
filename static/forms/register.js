@@ -50,11 +50,26 @@ if (emailInput) {
 }
 
 if (passwordInputMatch) {
+  const formGroups = Array.from(document.querySelectorAll(".form-group"));
+  const passwordLengthCheck = document.createElement("div");
+  passwordLengthCheck.setAttribute("id", "passwordLength");
+  formGroups[2].append(passwordLengthCheck);
   const passwordMatchCheck = document.createElement("div");
   passwordMatchCheck.setAttribute("id", "passwordMatch");
-  const formGroups = Array.from(document.querySelectorAll(".form-group"));
   formGroups[3].append(passwordMatchCheck);
+
   passwordInput.addEventListener("input", function () {
+    if (passwordInput.value.length < 5) {
+      passwordLengthCheck.innerHTML = "Password is not long enough";
+      console.log(passwordInput.value.length);
+    } else if (passwordInput.value.length > 50) {
+      passwordLengthCheck.innerHTML = "Password is too long";
+      console.log(passwordInput.value.length);
+    } else {
+      passwordLengthCheck.innerText = "Password is an adequate length";
+      console.log(passwordInput.value);
+    }
+
     if (
       passwordInput.value == passwordInputMatch.value &&
       passwordInput.value != ""
@@ -102,7 +117,8 @@ window.addEventListener("mousemove", function () {
     document.getElementById("emailAvailability").innerText ==
       "Email is available" &&
     passwordInput.value == passwordInputMatch.value &&
-    passwordInput.value != ""
+    passwordInput.value.length > 4 &&
+    passwordInput.value.length < 51
   ) {
     submitButton.disabled = false;
   } else {
@@ -116,7 +132,8 @@ window.addEventListener("touchstart", function () {
     document.getElementById("emailAvailability").innerText ==
       "Email is available" &&
     passwordInput.value == passwordInputMatch.value &&
-    passwordInput.value != ""
+    passwordInput.value.length > 4 &&
+    passwordInput.value.length < 51
   ) {
     submitButton.disabled = false;
   } else {

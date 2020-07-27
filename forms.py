@@ -32,16 +32,16 @@ class SearchSavedBooks(FlaskForm):
 
 class UserForm(FlaskForm):
     username = StringField("Username", validators=[
-                               InputRequired(), Length(min =5, max=50)])
-    email = StringField("Email", validators=[Email(), InputRequired(), Length(max = 50)])
-    password = PasswordField("Password", validators=[InputRequired(),Length(min = 5)])
+                               InputRequired(),Length(min =5, max=50)])
+    email = StringField("Email", validators=[Email(), InputRequired()])
+    password = PasswordField("Password (Must be between 5 and 50 characters, inclusive)", validators=[InputRequired(), Length(min =5, max=50)])
     new_password_match = PasswordField("Enter Password, again", validators=[InputRequired(), Length(min=5)])
 
 
 class LoginForm(FlaskForm):
 
-    username = StringField("Username", validators=[InputRequired()])
-    password = PasswordField("Password", validators=[InputRequired()])
+    username = StringField("Username", validators=[InputRequired(), Length(min =5, max=50)])
+    password = PasswordField("Password", validators=[InputRequired(), Length(min =5, max=50)])
 
 class EditUsernameForm(FlaskForm):
     
@@ -49,10 +49,10 @@ class EditUsernameForm(FlaskForm):
     password = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
 
 class EditUserPasswordForm(FlaskForm):
-    password = PasswordField("Enter Current Password", validators=[InputRequired()])
-    new_password = PasswordField("Enter New Password", validators=[InputRequired(), Length(min=5)])
-    new_password_match = PasswordField("Enter New Password, again", validators=[InputRequired(), Length(min=5)])
+    password = PasswordField("Enter Current Password", validators=[InputRequired(),Length(min=5, max = 50)])
+    new_password = PasswordField("Enter New Password (Must be between 5 and 50 characters, inclusive) ", validators=[InputRequired(), Length(min=5, max = 50)])
+    new_password_match = PasswordField("Enter New Password, again", validators=[InputRequired(), Length(min=5, max = 50)])
 
 
 class DeleteUserForm(FlaskForm):
-    delete_user = PasswordField("Enter Current Password to Confirm", validators=[InputRequired()])
+    delete_user = PasswordField("Enter Current Password to Confirm", validators=[InputRequired(), Length(min =5, max=50)])
