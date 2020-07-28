@@ -10,6 +10,9 @@ const BASE_URL_GOOGLE_BOOKS_API =
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const flashContainer = document.getElementById("flashContainer");
+const userID = document
+  .getElementById("userLoggedIn")
+  .getAttribute("data-user-id");
 
 var resp = null;
 
@@ -210,7 +213,7 @@ function appendModal() {
   }
 }
 
-function addCarousel(items) {
+async function addCarousel(items) {
   const holder = $(`#containerFluid`);
   var img;
   var paragraph;
@@ -218,6 +221,13 @@ function addCarousel(items) {
   var averageRating = "";
   var isbn13;
   var amazonSearch;
+  var saveBook;
+
+  const myBooks = await axios.get(
+    `http://127.0.0.1:5000/API/users/${userID}/books`
+  );
+
+  console.log(items, myBooks);
 
   for (let i = 0; i < items.length; i++) {
     var authors = "";
@@ -273,10 +283,16 @@ function addCarousel(items) {
         items[i].volumeInfo.title + " " + items[i].volumeInfo.authors[0];
     }
 
+    for (let k = 0; k < myBooks.data.length; k++) {
+      if (myBooks.data[k].id == items[i].id) {
+        saveBook = "Book Saved";
+        break;
+      } else {
+        saveBook = "Save Book";
+      }
+    }
+
     if (document.getElementById("userLoggedIn")) {
-      const userID = document
-        .getElementById("userLoggedIn")
-        .getAttribute("data-user-id");
       const infoLoggedIn = $(`<div class="carousel-item container" data-card-clicked = ${i}> 
                         <div class="row justify-content-center">
                               <div class = "col-3 d-flex justify-content-center">
@@ -331,7 +347,7 @@ function addCarousel(items) {
                                   </a>
                             </div>
                             <div class = "col-3">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success saveBooks">Save Book</button>
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success saveBooks">${saveBook}</button>
                             </div>
                             <div class = "col-3">
                             <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
@@ -426,7 +442,6 @@ function saveBooks(i) {
     }
     const bookID = saveBook.getAttribute("data-save-book");
     console.log(bookID);
-    const userID = saveBook.getAttribute("data-user-id");
     response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
       id: bookID,
     });

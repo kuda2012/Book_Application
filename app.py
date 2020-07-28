@@ -318,7 +318,7 @@ def show_books_api(user_id):
 @app.route("/users/<user_id>/books/filter", methods=["GET"])
 def filter_books(user_id):
     """Filter saved books"""
-    from sqlalchemy import or_, func as F
+    from sqlalchemy import or_, func as F, any_
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
@@ -331,13 +331,14 @@ def filter_books(user_id):
     # search_books = SavedBooks.query.filter(SavedBooks.authors.any(f'{query}')).all()
     # search_books = SavedBooks.query.filter(F.array_to_string(SavedBooks.authors, ',').like(f'{query}')).all()
     # search_books = SavedBooks.query.filter(SavedBooks.authors.like(any_(f'{query}'))).all()
-    search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'), SavedBooks.authors.any(f'{query}'))).all()
+    # search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'),  SavedBooks.authors.like((f'{query}')))).all()
+    search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'),F.array_to_string(SavedBooks.authors, ',').ilike(f'{query}'),)).all()  
     
     for book in search_books:
     # print(type(book))
         books_array.append(book.serialize())
 
-    # search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'),F.array_to_string(SavedBooks.authors, ',').ilike(f'{query}'),)).all()  
+   
     
     return jsonify(books_array)
 

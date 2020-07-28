@@ -24,9 +24,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 });
 
 searchForm.addEventListener("submit", async (evt) => {
-  if (document.getElementById("showSavedBooks")) {
-    document.getElementById("showSavedBooks").remove();
-  }
   evt.preventDefault();
   if (flashContainer) {
     flashContainer.innerHTML = "";
@@ -67,8 +64,8 @@ searchForm.addEventListener("submit", async (evt) => {
     console.log(resp);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
+    showSavedBooks.remove();
   });
-  showSavedBooks.remove();
 });
 
 function pageResults(items) {
