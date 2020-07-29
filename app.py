@@ -100,6 +100,9 @@ def signup():
 
     if form.validate_on_submit():
         try:
+            if (form.password.data != form.new_password_match.data):
+                flash("Passwords did not match", 'danger')
+                return render_template('signup.html', form=form)
             user = User.signup(
                 username=form.username.data,
                 password=form.password.data,
@@ -274,6 +277,9 @@ def edit_password(user_id):
 
     form = EditUserPasswordForm()
     if form.validate_on_submit():
+        if (form.new_password.data != form.new_password_match.data):
+            flash("Passwords did not match", 'danger')
+            return render_template('user/edit_password.html', form=form, user=g.user)
         user = User.authenticate(g.user.username,
                                  form.password.data)
 
