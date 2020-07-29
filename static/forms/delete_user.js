@@ -1,6 +1,6 @@
 const deleteUserInput = document.getElementById("delete_user");
 const submitButton = document.getElementById("submitButton");
-submitButton.disabled = true;
+// submitButton.disabled = true;
 
 if (deleteUserInput) {
   // Delete User Logic
@@ -15,17 +15,17 @@ if (deleteUserInput) {
   });
 }
 
-window.addEventListener("mousemove", function () {
-  if (deleteUserInput.value != "") {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
-window.addEventListener("touchstart", function () {
-  if (deleteUserInput.value != "") {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
+// window.addEventListener("mousemove", function () {
+//   if (deleteUserInput.value != "") {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });
+// window.addEventListener("touchstart", function () {
+//   if (deleteUserInput.value != "") {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });

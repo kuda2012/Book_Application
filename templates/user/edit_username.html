@@ -47,7 +47,7 @@ content%}
     <div class="row">
       <div class="col-8">
         <div class="form-group">
-          {{field.label}}{{field(class_="form-control",maxLength = "50")}} {%if
+          {{field.label}}{{field(class_="form-control",maxLength = "50" )}} {%if
           field.errors%}{%for error in field.errors%}
           <div class="formError bg-warning">{{error}}</div>
           {%endfor%}{%endif%}

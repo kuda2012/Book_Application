@@ -2,7 +2,7 @@ const newPasswordInput = document.getElementById("new_password");
 const passwordInput = document.getElementById("password");
 const passwordInputMatch = document.getElementById("new_password_match");
 const submitButton = document.getElementById("submitButton");
-submitButton.disabled = true;
+// submitButton.disabled = true;
 
 if (passwordInputMatch) {
   const formGroups = Array.from(document.querySelectorAll(".form-group"));
@@ -68,29 +68,29 @@ if (passwordInputMatch) {
     }
   });
 }
-window.addEventListener("mousemove", function () {
-  if (
-    document.getElementById("passwordMatch").innerText ==
-      "Passwords are a Match" &&
-    passwordInput.value != "" &&
-    newPasswordInput.value.length > 4 &&
-    newPasswordInput.value.length < 51
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
-window.addEventListener("touchstart", function () {
-  if (
-    document.getElementById("passwordMatch").innerText ==
-      "Passwords are a Match" &&
-    passwordInput.value != "" &&
-    newPasswordInput.value.length > 4 &&
-    newPasswordInput.value.length < 51
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
+// window.addEventListener("mousemove", function () {
+//   if (
+//     document.getElementById("passwordMatch").innerText ==
+//       "Passwords are a Match" &&
+//     passwordInput.value != "" &&
+//     newPasswordInput.value.length > 4 &&
+//     newPasswordInput.value.length < 51
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });
+// window.addEventListener("touchstart", function () {
+//   if (
+//     document.getElementById("passwordMatch").innerText ==
+//       "Passwords are a Match" &&
+//     passwordInput.value != "" &&
+//     newPasswordInput.value.length > 4 &&
+//     newPasswordInput.value.length < 51
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });

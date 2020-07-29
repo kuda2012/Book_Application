@@ -2,7 +2,7 @@ const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const submitButton = document.getElementById("submitButton");
 const BASE_URL_USERNAMES = "/usernames/all";
-submitButton.disabled = false;
+// submitButton.disabled = false;
 
 if (usernameInput) {
   const formGroups = Array.from(document.querySelectorAll(".form-group"));
@@ -24,25 +24,25 @@ if (usernameInput) {
     }
   });
 }
-window.addEventListener("mousemove", function () {
-  if (
-    document.getElementById("usernameAvailability").innerText ==
-      "Username is available" &&
-    passwordInput.value != ""
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
-window.addEventListener("touchstart", function () {
-  if (
-    document.getElementById("usernameAvailability").innerText ==
-      "Username is available" &&
-    passwordInput.value != ""
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
+// window.addEventListener("mousemove", function () {
+//   if (
+//     document.getElementById("usernameAvailability").innerText ==
+//       "Username is available" &&
+//     passwordInput.value != ""
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });
+// window.addEventListener("touchstart", function () {
+//   if (
+//     document.getElementById("usernameAvailability").innerText ==
+//       "Username is available" &&
+//     passwordInput.value != ""
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });

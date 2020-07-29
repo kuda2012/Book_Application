@@ -7,7 +7,7 @@ const BASE_URL_USERNAMES = "/usernames/all";
 const BASE_URL_EMAILS = "/emails/all";
 const submitButton = document.getElementById("submitButton");
 const corsAnywhere = "https://cors-anywhere.herokuapp.com/";
-submitButton.disabled = false;
+// submitButton.disabled = false;
 
 if (usernameInput) {
   const formGroups = Array.from(document.querySelectorAll(".form-group"));
@@ -104,33 +104,33 @@ if (passwordInputMatch) {
   });
 }
 
-window.addEventListener("mousemove", function () {
-  if (
-    document.getElementById("usernameAvailability").innerText ==
-      "Username is available" &&
-    document.getElementById("emailAvailability").innerText ==
-      "Email is available" &&
-    passwordInput.value == passwordInputMatch.value &&
-    passwordInput.value.length > 4 &&
-    passwordInput.value.length < 51
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
-window.addEventListener("touchstart", function () {
-  if (
-    document.getElementById("usernameAvailability").innerText ==
-      "Username is available" &&
-    document.getElementById("emailAvailability").innerText ==
-      "Email is available" &&
-    passwordInput.value == passwordInputMatch.value &&
-    passwordInput.value.length > 4 &&
-    passwordInput.value.length < 51
-  ) {
-    submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
-  }
-});
+// window.addEventListener("mousemove", function () {
+//   if (
+//     document.getElementById("usernameAvailability").innerText ==
+//       "Username is available" &&
+//     document.getElementById("emailAvailability").innerText ==
+//       "Email is available" &&
+//     passwordInput.value == passwordInputMatch.value &&
+//     passwordInput.value.length > 4 &&
+//     passwordInput.value.length < 51
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });
+// window.addEventListener("touchstart", function () {
+//   if (
+//     document.getElementById("usernameAvailability").innerText ==
+//       "Username is available" &&
+//     document.getElementById("emailAvailability").innerText ==
+//       "Email is available" &&
+//     passwordInput.value == passwordInputMatch.value &&
+//     passwordInput.value.length > 4 &&
+//     passwordInput.value.length < 51
+//   ) {
+//     submitButton.disabled = false;
+//   } else {
+//     submitButton.disabled = true;
+//   }
+// });
