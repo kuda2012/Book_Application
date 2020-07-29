@@ -10,13 +10,9 @@ if (usernameInput) {
   usernameAvailability.setAttribute("id", "usernameAvailability");
   formGroups[0].append(usernameAvailability);
   usernameInput.addEventListener("input", async function () {
-    try {
-      resp = await axios.get(BASE_URL_USERNAMES, {
-        params: { username: usernameInput.value },
-      });
-    } catch {
-      usernameAvailability.innerText = "Too Many Requests";
-    }
+    resp = await axios.get(BASE_URL_USERNAMES, {
+      params: { username: usernameInput.value },
+    });
 
     usernameAvailability.innerText = resp.data;
     if (usernameInput.nextSibling.nextSibling) {
