@@ -7,7 +7,8 @@ from secrets import SECRET_KEY
 from models import db, User, connect_db, SavedBooks
 import os
 import re
-# import wtforms_json
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
 app = Flask(__name__)
@@ -35,6 +36,15 @@ BASE_URL = "https://www.googleapis.com/books/v1/volumes?"
 BASE_URL_VOLUME_SEARCH = "https://www.googleapis.com/books/v1/volumes"
 
 
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["1000 per day", " 200 per hour"]
+)
+
+
+
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
@@ -60,6 +70,7 @@ def do_logout():
 
 
 @app.route('/')
+@limiter.exempt
 def homepage():
     """Show homepage."""
 
@@ -71,6 +82,7 @@ def homepage():
 
 
 @app.route('/signup', methods=["GET", "POST"])
+@limiter.exempt
 def signup():
     """Handle user signup.
 
@@ -108,6 +120,7 @@ def signup():
 
 
 @app.route('/login', methods=["GET", "POST"])
+@limiter.exempt
 def login():
     """Handle user login."""
     if g.user:
@@ -129,6 +142,7 @@ def login():
 
 
 @app.route('/logout')
+@limiter.exempt
 def logout():
     """Handle logout of user."""
 
@@ -144,6 +158,7 @@ def logout():
 # User Info Routes
 
 @app.route("/users/<user_id>")
+@limiter.exempt
 def show_user(user_id):
     """Show user profile"""
 
@@ -205,6 +220,7 @@ def check_emails_availability():
 
 
 @app.route("/users/<user_id>/edit")
+@limiter.exempt
 def edit_user(user_id):
     """Show user options to edit their profile"""
 
@@ -216,6 +232,7 @@ def edit_user(user_id):
 
 
 @app.route("/users/<user_id>/edit/username", methods=["GET", "POST"])
+@limiter.exempt
 def edit_username(user_id):
     """Edit Username """
 
@@ -247,6 +264,7 @@ def edit_username(user_id):
 
 
 @app.route("/users/<user_id>/edit/password", methods=["GET", "POST"])
+@limiter.exempt
 def edit_password(user_id):
     """Edit Password """
 
@@ -276,6 +294,7 @@ def edit_password(user_id):
 
 
 @app.route("/users/<user_id>/delete_user", methods=["GET", "POST"])
+@limiter.exempt
 def delete_user(user_id):
     """Permanently delete ccount"""
     if not g.user:
@@ -302,6 +321,7 @@ def delete_user(user_id):
 
 
 @app.route("/API/users/<user_id>/books", methods=["GET"])
+@limiter.exempt
 def show_books_api(user_id):
     if not g.user:
         flash("Must be logged in to access this", 'danger')
@@ -315,6 +335,7 @@ def show_books_api(user_id):
 
 
 @app.route("/users/<user_id>/books/filter", methods=["GET"])
+@limiter.exempt
 def filter_books(user_id):
     """Filter saved books"""
     from sqlalchemy import or_, func as F, any_
@@ -334,6 +355,7 @@ def filter_books(user_id):
 
 
 @app.route("/users/<user_id>/books", methods=["GET"])
+@limiter.exempt
 def show_books(user_id):
     """Add book to saved books"""
     if not g.user:
@@ -348,6 +370,7 @@ def show_books(user_id):
 
 
 @app.route("/users/<user_id>/books/add", methods=["POST"])
+@limiter.exempt
 def add_books(user_id):
     """Add book to saved books"""
     if not g.user:
@@ -451,6 +474,7 @@ def add_books(user_id):
 
 
 @app.route("/users/<user_id>/books/delete", methods=["POST"])
+@limiter.exempt
 def delete_book(user_id):
     """Add book to saved books"""
     if not g.user:
