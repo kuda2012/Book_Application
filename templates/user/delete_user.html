@@ -40,11 +40,10 @@ content%}
   {% endfor %}
 </div>
 <div class="container">
-  <h1 class="display-3">Delete User</h1>
+  <h1 class="display-4">Delete User</h1>
   <h5>
-    We truly regret that you'd like to delete to your account. If you're truly
-    certain about this, then well, we wish you the best, and hope you come back
-    soon.
+    We truly regret that you'd like to delete your account. If you're certain
+    about this, then well, we wish you the best, and hope you come back soon.
   </h5>
   <form action="/users/{{user.id}}/delete_user" method="POST">
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=

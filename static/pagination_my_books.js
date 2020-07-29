@@ -7,19 +7,27 @@ function getNumberOfPages(list) {
 }
 
 document.getElementById("next").addEventListener("click", function () {
-  nextPage(resp.data);
+  if (resp != null) {
+    nextPage(resp.data);
+  }
 });
 
 document.getElementById("previous").addEventListener("click", function () {
-  previousPage(resp.data);
+  if (resp != null) {
+    previousPage(resp.data);
+  }
 });
 
 document.getElementById("first").addEventListener("click", function () {
-  firstPage(resp.data);
+  if (resp != null) {
+    firstPage(resp.data);
+  }
 });
 
 document.getElementById("last").addEventListener("click", function () {
-  lastPage(resp.data);
+  if (resp != null) {
+    lastPage(resp.data);
+  }
 });
 
 function nextPage(items) {
@@ -46,10 +54,8 @@ function lastPage(items) {
 }
 
 function loadList(items) {
-  // console.log(currentPage, numberPerPage, numberOfPages);
   var begin = (currentPage - 1) * numberPerPage;
   var end = begin + numberPerPage;
-  // console.log(begin, end);
 
   pageResults(items.slice(begin, end));
 

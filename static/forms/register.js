@@ -20,7 +20,6 @@ if (usernameInput) {
 
     usernameAvailability.innerText = resp.data;
 
-    console.log(resp);
     if (usernameInput.nextSibling.nextSibling) {
       if (
         usernameInput.nextSibling.nextSibling.classList.contains("formError")
@@ -42,7 +41,6 @@ if (emailInput) {
     });
     emailAvailability.innerText = resp.data;
 
-    console.log(resp);
     if (emailInput.nextSibling.nextSibling.classList.contains("formError")) {
       emailInput.nextSibling.nextSibling.innerText = "";
     }
@@ -61,13 +59,10 @@ if (passwordInputMatch) {
   passwordInput.addEventListener("input", function () {
     if (passwordInput.value.length < 5) {
       passwordLengthCheck.innerHTML = "Password is not long enough";
-      console.log(passwordInput.value.length);
     } else if (passwordInput.value.length > 50) {
       passwordLengthCheck.innerHTML = "Password is too long";
-      console.log(passwordInput.value.length);
     } else {
       passwordLengthCheck.innerText = "Password is an adequate length";
-      console.log(passwordInput.value);
     }
 
     if (
@@ -79,7 +74,6 @@ if (passwordInputMatch) {
       passwordMatchCheck.innerText = "Passwords do not match";
     }
     if (passwordInput.nextSibling.nextSibling) {
-      // console.log(passwordInput.nextSibling.nextSibling);
       if (
         passwordInput.nextSibling.nextSibling.classList.contains("formError")
       ) {
@@ -103,7 +97,6 @@ if (passwordInputMatch) {
           "formError"
         )
       ) {
-        //   console.log(passwordInputMatch.nextSibling.nextSibling);
         passwordInputMatch.nextSibling.nextSibling.innerText = "";
       }
     }

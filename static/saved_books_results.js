@@ -9,17 +9,24 @@ const BASE_URL_GOOGLE_BOOKS_API =
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const submitButton = document.getElementById("submitButton");
+const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
 const userID = document
   .getElementById("userLoggedIn")
   .getAttribute("data-user-id");
-var resp_holder = null;
-var resp = null;
+var resp_holder;
+var resp;
 
-window.addEventListener("DOMContentLoaded", async (event) => {
+window.addEventListener("DOMContentLoaded", async () => {
   resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
-  console.log(resp);
+
   resp_holder = resp;
   numberOfPages = getNumberOfPages(resp.data);
+  if (numberOfPages == 1) {
+    for (let button of paginateButtons) {
+      button.style.display = "none";
+    }
+  }
+
   firstPage(resp.data);
 });
 
@@ -37,31 +44,29 @@ searchForm.addEventListener("submit", async (evt) => {
     alert("Please enter an input to search for");
     return;
   }
-  console.log(searchInput.value);
-  resp_holder = resp;
+
   resp = await axios.get(`${BASE_URL_USERS}/${userID}/books/filter?`, {
     params: { query: searchInput.value },
   });
-  // console.log(response);
-  if (resp.data == null) {
+  if (resp.data.length == 0) {
     alert("Could not find any results, try a different entry");
     searchInput.value = "";
+    resp = resp_holder;
     return;
   }
 
   searchInput.value = "";
-
-  console.log(resp);
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
-
-  const showSavedBooks = $("<button>Show Saved Books</button>");
-  showSavedBooks.attr({ id: "showSavedBooks", class: "btn btn-secondary" });
+  if (document.getElementById("showSavedBooks")) {
+    document.getElementById("showSavedBooks").remove();
+  }
+  const showSavedBooks = $("<button>Back</button>");
+  showSavedBooks.attr({ id: "showSavedBooks", class: "btn btn-danger ml-2" });
   showSavedBooks.insertAfter($`#searchForm`);
 
-  showSavedBooks.on("click", async (event) => {
+  showSavedBooks.on("click", async () => {
     resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
-    console.log(resp);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
     showSavedBooks.remove();
@@ -146,16 +151,11 @@ function buildCard(cardInfo, column, index) {
 }
 
 function appendModal() {
-  if (document.getElementById("userLoggedIn")) {
-    const myBooks = document
-      .getElementById("userLoggedIn")
-      .getAttribute("data-user-books");
-    const $modalMarkupLoggedIn = $(`
+  const $modalMarkupLoggedIn = $(`
 <div class="modal fade" id="myModal"  role="dialog" aria-labelledby="exampleModalLabel aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class= "modal-title" id="exampleModalLabel">Page ${currentPage}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
         </button>
@@ -174,8 +174,8 @@ function appendModal() {
         <!--end modal-body-->
       </div>
       <div class="modal-footer flex-row">
-          <div class = "col d-flex justify-content-end" id = "closeButtonDiv">
-            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+          <div class = "col d-flex justify-content-end" >
+            <button type="button" class="btn btn-secondary btn-sm" id = "closeButtonFooterSaved" data-dismiss="modal">Close</button>
           </div>
         <!--end modal-footer-->
       </div>
@@ -183,8 +183,7 @@ function appendModal() {
     </div>
   </div>
 </div>`);
-    return $modalMarkupLoggedIn;
-  }
+  return $modalMarkupLoggedIn;
 }
 
 function addCarousel(items) {
@@ -215,12 +214,11 @@ function addCarousel(items) {
       spaced_authors = "N/A";
     }
     if (spaced_authors == "N/A") {
-      amazonSearch = items[i].volumeInfo.title + " book";
+      amazonSearch = items[i].title + " book";
     } else {
       amazonSearch = items[i].title + " " + items[i].authors[0];
-      console.log(amazonSearch);
+
       amazonSearch = amazonSearch.replace(/['"]+/g, "");
-      console.log(amazonSearch);
     }
 
     try {
@@ -288,20 +286,20 @@ function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-around carousel-row">
+                        <div class = "row justify-content-around carousel-row mt-2">
                             <div class = "col-3">
-                                  <a href = ${items[i].info}>
-                                    <button class = "btn btn-info">Learn More</button>
+                                  <a href = ${items[i].info} target="_blank">
+                                    <button class = "btn btn-info btn-sm">Learn More</button>
                                   </a>
                             </div>
                             <div class = "col-3">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success deleteBooks ">Remove Book</button>
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success btn-sm deleteBooks ">Remove Book</button>
                             </div>
                             <div class = "col-3">
-                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
-                                  method="get">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"
+                                  method="get" target="_blank">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
-                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                <button  class ="btn btn-warning btn-sm" >Amazon Search</button>
                                 </FORM>
                             </div>                           
                         </div>
@@ -322,15 +320,10 @@ function removeBooks(i) {
       return;
     }
     const bookID = deleteBook.getAttribute("data-save-book");
-    // console.log(bookID);
-    const response = await axios.post(
-      `${BASE_URL_USERS}/${userID}/books/delete`,
-      {
-        id: bookID,
-      }
-    );
+    await axios.post(`${BASE_URL_USERS}/${userID}/books/delete`, {
+      id: bookID,
+    });
     deleteBook.innerText = "Book Deleted";
-    // console.log(response);
     removeBookHTML(bookID);
   });
 }
@@ -346,6 +339,11 @@ async function removeBookHTML(id) {
       resp.data.splice(i, 1);
     }
   }
+  for (let i = 0; i < resp_holder.data.length; i++) {
+    if (resp_holder.data[i].id == id) {
+      resp_holder.data.splice(i, 1);
+    }
+  }
   numberOfPages = getNumberOfPages(resp.data);
 
   if (currentPage > numberOfPages) {
@@ -355,11 +353,8 @@ async function removeBookHTML(id) {
 
   if (resp.data.length == 0 && resp_holder.data.length == 0) {
     window.location.href = "/";
-  } else if (resp.data.length == 0) {
-    window.location.href = "/";
-  } else if (resp.data.length == 0 && resp_holder.data.length > 0) {
+  } else {
     resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
-    console.log(resp);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
   }

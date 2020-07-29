@@ -38,8 +38,8 @@
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}
 </div>
-<div>
-  <form action="/" method="POST" id="searchForm">
+<div id="searchDiv" class="d-flex flex-row justify-content-center">
+  <form action="/" method="POST" id="searchForm" class="d-flex flex-row">
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
     <div class="form-group">
@@ -49,17 +49,46 @@
       {%endfor%}{%endif%}
     </div>
     {%endfor%}
-    <button class="btn btn-primary" id="submitButton">Submit</button>
+    <button class="btn btn-primary ml-3" id="submitButtonMyBooks">
+      Submit
+    </button>
   </form>
 </div>
 
 <div class="container" id="cardsAndModal">
   <div id="cardsContainer"></div>
 </div>
-<input class="btn btn-secondary" type="button" id="first" value="first" />
-<input class="btn btn-secondary" type="button" id="next" value="next" />
-<input class="btn btn-secondary" type="button" id="previous" value="previous" />
-<input class="btn btn-secondary" type="button" id="last" value="last" />
+<div
+  id="paginationButtons"
+  class="d-flex flex-row align-items-center justify-content-center mt-3"
+  style="display: none;"
+>
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="first"
+    value="first"
+  />
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="previous"
+    value="previous"
+  />
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="next"
+    value="next"
+  />
+
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="last"
+    value="last"
+  />
+</div>
 <script src="/static/saved_books_results.js"></script>
 <script src="/static/pagination_my_books.js"></script>
 {%endblock%}

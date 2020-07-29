@@ -27,6 +27,7 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
+
 db.create_all()
 
 
@@ -103,7 +104,6 @@ def signup():
         return redirect("/")
 
     else:
-        print(form.errors)
         return render_template('signup.html', form=form)
 
 
@@ -292,13 +292,14 @@ def delete_user(user_id):
             username = user.username
             db.session.commit()
             flash(
-                f"Farewell, {username}. You're always welcome to come back", "primary")
+                f"Farewell, {username}. You're always welcome to come back", "success")
             return redirect("/")
         flash("Invalid Password", "danger")
         return redirect(f"users/{user_id}/delete_user")
     return render_template("user/delete_user.html", form=form, user=g.user)
 
 # Saved Books Routes
+
 
 @app.route("/API/users/<user_id>/books", methods=["GET"])
 def show_books_api(user_id):
@@ -309,9 +310,7 @@ def show_books_api(user_id):
     saved_books = SavedBooks.query.filter_by(user_id=g.user.id).all()
     books_array = []
     for book in saved_books:
-        # print(type(book))
         books_array.append(book.serialize())
-        # print(books_array)
     return jsonify(books_array)
 
 
@@ -322,24 +321,14 @@ def filter_books(user_id):
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
-    # query_terms = request.args.get("query").split()
-
-    # print(query_terms)
-
     query = request.args.get("query")
     books_array = []
-    # search_books = SavedBooks.query.filter(SavedBooks.authors.any(f'{query}')).all()
-    # search_books = SavedBooks.query.filter(F.array_to_string(SavedBooks.authors, ',').like(f'{query}')).all()
-    # search_books = SavedBooks.query.filter(SavedBooks.authors.like(any_(f'{query}'))).all()
-    # search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'),  SavedBooks.authors.like((f'{query}')))).all()
-    search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(f'%{query}%'),F.array_to_string(SavedBooks.authors, ',').ilike(f'{query}'),)).all()  
-    
+    search_books = SavedBooks.query.filter(or_(SavedBooks.title.ilike(f'%{query}%'), SavedBooks.isbn13.ilike(
+        f'%{query}%'), SavedBooks.authors_string.ilike((f'%{query}%')))).all()
+
     for book in search_books:
-    # print(type(book))
         books_array.append(book.serialize())
 
-   
-    
     return jsonify(books_array)
 
 
@@ -351,15 +340,11 @@ def show_books(user_id):
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
     form = SearchSavedBooks()
-    saved_books = SavedBooks.query.filter_by(user_id = g.user.id).all()
+    saved_books = SavedBooks.query.filter_by(user_id=g.user.id).all()
     if (len(saved_books) == 0):
         flash("You don't have any books saved yet, search for a book so you can save it", "danger")
         return redirect("/")
-    return render_template("show_books.html", form = form, user = g.user)
-
-
-
-
+    return render_template("show_books.html", form=form, user=g.user)
 
 
 @app.route("/users/<user_id>/books/add", methods=["POST"])
@@ -368,14 +353,11 @@ def add_books(user_id):
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
-    # print(request.json["bookID"])
-    # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
     user_book = SavedBooks.query.filter_by(id=request.json["id"]).one_or_none()
-    print(user_book)
     if user_book:
         return "You've already saved this book"
     resp = requests.get(
-        f'{BASE_URL}', params = {'q':request.json["id"]})
+        f'{BASE_URL}', params={'q': request.json["id"]})
     response = resp.json()
     isbn13 = None
     thumbnail = None
@@ -383,8 +365,8 @@ def add_books(user_id):
     rating = None
     info = None
     authors = None
+    authors_string = None
     try:
-        print(1)
         try:
             isbn13 = response['items'][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]
         except (IndexError, KeyError):
@@ -413,16 +395,24 @@ def add_books(user_id):
             authors = response['items'][0]["volumeInfo"]["authors"]
         except (IndexError, KeyError):
             authors = None
-        saved_book = SavedBooks(id=response["items"][0]['id'], isbn13=isbn13,rating = rating, info = info, authors = authors,
+        try:
+            if(authors != None):
+                authors_string = str(authors).strip('[]')
+            else:
+                authors = None
+        except:
+            authors_string = None
+        saved_book = SavedBooks(id=response["items"][0]['id'], isbn13=isbn13, rating=rating, info=info, authors=authors, authors_string=authors_string,
                                 title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
         db.session.add(saved_book)
         db.session.commit()
+
         return jsonify(response)
     except (IndexError, KeyError):
-        print(2)
+
         resp = requests.get(
-        f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
+            f'{BASE_URL_VOLUME_SEARCH}/{request.json["id"]}')
         response = resp.json()
         try:
             isbn13 = response["volumeInfo"]["industryIdentifiers"][1]["identifier"]
@@ -452,12 +442,13 @@ def add_books(user_id):
             authors = response["volumeInfo"]["authors"]
         except (IndexError, KeyError):
             authors = None
-        saved_book = SavedBooks(id=request.json["id"], isbn13=isbn13,rating = rating, info = info, authors = authors,
+        saved_book = SavedBooks(id=request.json["id"], isbn13=isbn13, rating=rating, info=info, authors=authors, authors_string=authors,
                                 title=title, description=description, thumbnail=thumbnail, user_id=g.user.id)
 
         db.session.add(saved_book)
         db.session.commit()
         return jsonify(response)
+
 
 @app.route("/users/<user_id>/books/delete", methods=["POST"])
 def delete_book(user_id):
@@ -465,10 +456,7 @@ def delete_book(user_id):
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
-    # print(request.json["bookID"])
-    # print(f'{BASE_URL_VOLUME_SEARCH}/{request.json["bookID"]}')
     user_book = SavedBooks.query.filter_by(id=request.json["id"]).one_or_none()
-    print(user_book)
     if user_book:
         db.session.delete(user_book)
         db.session.commit()

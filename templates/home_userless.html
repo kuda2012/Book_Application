@@ -27,33 +27,75 @@ content%}
   </div>
 </nav>
 
-<div class="container">
+<div class="container" id="flashContainer">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}
 </div>
-<div>
-  <form action="/" method="POST" id="searchForm">
+<div id="searchDiv" class="d-flex flex-column align-items-center">
+  <h3 class="display-3">Book Carousel</h3>
+  <form
+    action="/"
+    method="POST"
+    id="searchForm"
+    class="d-flex flex-column align-items-center"
+  >
+    <h6 class="text-center">Search a book.</h6>
+    <h6 class="text-center">Save a book.</h6>
+    <h6 class="text-center">Buy a book.</h6>
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
-    <div class="form-group">
+    <div class="form-group align-self-start">
       {{field.label}} {{field(maxLength = "100")}} {%if field.errors%}{%for
       error in field.errors%}
       <div class="formError bg-warning">{{error}}</div>
       {%endfor%}{%endif%}
     </div>
     {%endfor%}
-    <button class="btn btn-primary">Submit</button>
+    <button class="btn btn-primary btn-md">
+      Submit
+    </button>
   </form>
 </div>
 
-<div class="container" id="cardsAndModal">
+<div class="container mt-3" id="cardsAndModal">
   <div id="cardsContainer"></div>
 </div>
-<input class="btn btn-secondary" type="button" id="first" value="first" />
-<input class="btn btn-secondary" type="button" id="next" value="next" />
-<input class="btn btn-secondary" type="button" id="previous" value="previous" />
-<input class="btn btn-secondary" type="button" id="last" value="last" />
+<div
+  id="paginationButtons"
+  class="d-flex flex-row align-items-center justify-content-center mt-3"
+  style="display: none;"
+>
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="first"
+    value="first"
+    style="display: none;"
+  />
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="previous"
+    value="previous"
+    style="display: none;"
+  />
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="next"
+    value="next"
+    style="display: none;"
+  />
+
+  <input
+    class="btn btn-secondary paginate"
+    type="button"
+    id="last"
+    value="last"
+    style="display: none;"
+  />
+</div>
 <script src="/static/search_results.js"></script>
 <script src="/static/pagination.js"></script>
 {%endblock%}

@@ -21,7 +21,6 @@ content%}
       <li class="nav-item">
         <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
       </li>
-      <!-- <li class="nav-item"></li> -->
     </ul>
     <a
       class="nav-link text-secondary"
@@ -41,13 +40,19 @@ content%}
 </div>
 <div>
   <div class="container">
-    <h1 class="display-1">Edit User</h1>
-    <a href="/users/{{user.id}}/edit/username">
-      <button>Edit Username</button>
-    </a>
-    <a href="/users/{{user.id}}/edit/password">
-      <button>Edit Password</button>
-    </a>
+    <h1>Edit User</h1>
+
+    <button class="btn btn-secondary">
+      <a href="/users/{{user.id}}/edit/username" style="text-decoration: none;"
+        >Edit Username</a
+      >
+    </button>
+
+    <button class="btn btn-secondary">
+      <a href="/users/{{user.id}}/edit/password" style="text-decoration: none;"
+        >Edit Password</a
+      >
+    </button>
   </div>
 </div>
 {%endblock%}

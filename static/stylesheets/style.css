@@ -18,11 +18,7 @@
   font-size: 12px;
   color: black;
 }
-/* .carousel-control-next-icon,
-.carousel-control-prev-icon {
-  color: black;
-  background-color: black;
-} */
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   height: 100px;
@@ -32,38 +28,62 @@
 }
 .carousel-control-next-icon:after {
   content: ">";
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
   color: black;
 }
 
 .carousel-control-prev-icon:after {
   content: "<";
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
   color: black;
 }
 
-/* .saveBooks {
-  font-size: small;
-} */
-#bookButtonFooter {
-  width: 85px;
-  /* margin-left: 73px; */
-}
-#closeButtonFooter {
-  width: 85px;
-  height: 60px;
-  /* margin-right: 80px; */
+.carousel-control-prev-icon:hover {
+  transform: scale(1.03);
+
+  transition: transform 0.2s;
 }
 
-.deleteBooks {
-  height: 65px;
+.carousel-control-next-icon:hover {
+  transform: scale(1.03);
+
+  transition: transform 0.2s;
+}
+
+#closeButtonFooter {
+  width: 84px;
 }
 #closeButtonFooterSaved {
-  width: 85px;
-  height: 60px;
+  margin-right: 27px;
 }
+
 #closeButtonDiv {
-  margin-right: 20px;
+  margin-right: 72px;
+}
+#submitButtonMyBooks {
+  height: 27px;
+  width: 52px;
+  font-size: 10px;
+  padding: 0px;
+}
+
+#showSavedBooks {
+  height: 27px;
+  width: 52px;
+  font-size: 10px;
+  padding: 0px;
+}
+
+.cards:hover {
+  transform: scale(1.03);
+
+  transition: transform 0.2s;
+}
+
+.cards:active,
+.btn:active {
+  transform: scale(0.97);
+  transition: transform 0.2s;
 }

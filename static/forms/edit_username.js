@@ -14,7 +14,6 @@ if (usernameInput) {
       params: { username: usernameInput.value },
     });
     usernameAvailability.innerText = resp.data;
-    console.log(resp);
     if (usernameInput.nextSibling.nextSibling) {
       if (
         usernameInput.nextSibling.nextSibling.classList.contains("formError")

@@ -28,7 +28,7 @@ class BookConditionsForm(FlaskForm):
                              (category, category) if type(category) != tuple else category for category in categories])
 class SearchSavedBooks(FlaskForm):
         general_search = StringField(
-        "Enter Title, Author, or ISBN", validators=[InputRequired()])
+        "Filter your Saved Books: Enter Title, Author, or ISBN", validators=[InputRequired()])
 
 class UserForm(FlaskForm):
     username = StringField("Username", validators=[

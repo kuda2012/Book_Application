@@ -10,9 +10,12 @@ const BASE_URL_GOOGLE_BOOKS_API =
 const BASE_URL_USERS = "http://127.0.0.1:5000/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const flashContainer = document.getElementById("flashContainer");
-const userID = document
-  .getElementById("userLoggedIn")
-  .getAttribute("data-user-id");
+const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
+var $target = $("html,body");
+var userID;
+if (document.getElementById("userLoggedIn")) {
+  userID = document.getElementById("userLoggedIn").getAttribute("data-user-id");
+}
 
 var resp = null;
 
@@ -54,9 +57,13 @@ searchForm.addEventListener("submit", async (evt) => {
   previewInput.value = "";
   categoryInput.value = "";
 
-  console.log(resp);
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
+  for (let button of paginateButtons) {
+    button.setAttribute("style", "display=initial");
+  }
+
+  $target.animate({ scrollTop: $target.height() }, 3000);
 });
 
 function pageResults(items) {
@@ -145,7 +152,6 @@ function appendModal() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class= "modal-title" id="exampleModalLabel">Page ${currentPage}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
         </button>
@@ -165,9 +171,9 @@ function appendModal() {
       </div>
       <div class="modal-footer d-flex flex-row justify-content-around">
             <a href = ${myBooks}>
-               <button type="button" id = "bookButtonFooter" class="btn btn-primary">My Books</button>
+               <button type="button" id = "bookButtonFooter" class="btn btn-primary btn-sm">My Books</button>
             </a>
-            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger btn-sm" id = "closeButtonFooter" data-dismiss="modal">Close</button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
@@ -182,7 +188,6 @@ function appendModal() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class= "modal-title" id="exampleModalLabel">Page ${currentPage}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
         </button>
@@ -201,7 +206,7 @@ function appendModal() {
         <!--end modal-body-->
       </div>
       <div class="modal-footer d-flex flex-row" id = "closeButtonDiv">
-            <button type="button" class="btn btn-secondary" id = "closeButtonFooter" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary btn-sm" id = "closeButtonFooter" data-dismiss="modal">Close</button>
         <!--end modal-footer-->
       </div>
       <!--end modal-content-->
@@ -221,13 +226,11 @@ async function addCarousel(items) {
   var averageRating = "";
   var isbn13;
   var amazonSearch;
-  var saveBook;
+  var saveBook = "Save Book";
 
   const myBooks = await axios.get(
     `http://127.0.0.1:5000/API/users/${userID}/books`
   );
-
-  console.log(items, myBooks);
 
   for (let i = 0; i < items.length; i++) {
     var authors = "";
@@ -287,8 +290,6 @@ async function addCarousel(items) {
       if (myBooks.data[k].id == items[i].id) {
         saveBook = "Book Saved";
         break;
-      } else {
-        saveBook = "Save Book";
       }
     }
 
@@ -340,20 +341,20 @@ async function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-between carousel-row">
+                        <div class = "row justify-content-between carousel-row mt-2">
                             <div class = "col-3">
-                                  <a href = ${items[i].volumeInfo.infoLink}>
-                                    <button class = "btn btn-info">Learn More</button>
+                                  <a href = ${items[i].volumeInfo.infoLink} target="_blank">
+                                    <button class = "btn btn-info btn-sm">Learn More</button>
                                   </a>
                             </div>
                             <div class = "col-3">
-                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success saveBooks">${saveBook}</button>
+                                    <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success btn-sm saveBooks">${saveBook}</button>
                             </div>
                             <div class = "col-3">
-                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
-                                  method="get">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"
+                                  method="get" target="_blank">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
-                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                <button  class ="btn btn-warning btn-sm" >Amazon Search</button>
                                 </FORM>
                             </div>                           
                         </div>
@@ -408,17 +409,17 @@ async function addCarousel(items) {
                                 </div>
                             </div>
                         </div>
-                        <div class = "row justify-content-around carousel-row">
+                        <div class = "row justify-content-around carousel-row mt-2">
                             <div class = "col-3 d-flex justify-content-center">
-                                  <a href = ${items[i].volumeInfo.infoLink}>
-                                    <button class = "btn btn-success">Learn More</button>
+                                  <a href = ${items[i].volumeInfo.infoLink} target="_blank">
+                                    <button class = "btn btn-success btn-sm">Learn More</button>
                                   </a>
                             </div>
                             <div class = "col-3">
-                            <FORM action="http://www.amazon.com/exec/obidos/external-search"[RETURN]
-                                  method="get">
+                            <FORM action="http://www.amazon.com/exec/obidos/external-search"
+                                  method="get" target="_blank">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
-                                <button  class ="btn btn-warning" >Amazon Search</button>
+                                <button  class ="btn btn-warning btn-sm" >Amazon Search</button>
                                 </FORM>
                             </div>                           
                         </div>
@@ -441,11 +442,9 @@ function saveBooks(i) {
       return;
     }
     const bookID = saveBook.getAttribute("data-save-book");
-    console.log(bookID);
     response = await axios.post(`${BASE_URL_USERS}/${userID}/books/add`, {
       id: bookID,
     });
     saveBook.innerText = "Book Saved";
-    console.log(response);
   });
 }
