@@ -228,9 +228,7 @@ async function addCarousel(items) {
   var amazonSearch;
   var saveBook = "Save Book";
 
-  const myBooks = await axios.get(
-    `http://127.0.0.1:5000/API/users/${userID}/books`
-  );
+  const myBooks = await axios.get(`/API/users/${userID}/books`);
 
   for (let i = 0; i < items.length; i++) {
     var authors = "";
