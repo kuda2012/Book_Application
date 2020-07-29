@@ -6,7 +6,6 @@ from sqlalchemy.exc import IntegrityError
 from models import db, User, connect_db, SavedBooks
 import os
 import re
-from flaslasmport get_remote_address
 
 
 app = Flask(__name__)
@@ -32,9 +31,6 @@ db.create_all()
 
 BASE_URL = "https://www.googleapis.com/books/v1/volumes?"
 BASE_URL_VOLUME_SEARCH = "https://www.googleapis.com/books/v1/volumes"
-
-
-
 
 
 @app.before_request
@@ -332,7 +328,6 @@ def filter_books(user_id):
         books_array.append(book.serialize())
 
     return jsonify(books_array)
-
 
 
 @app.route("/users/<user_id>/books", methods=["GET"])
