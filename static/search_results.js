@@ -7,7 +7,7 @@ const orderByInput = document.getElementById("order_by_filter");
 const cardsAndModal = $("#cardsAndModal");
 const BASE_URL_GOOGLE_BOOKS_API =
   "https://www.googleapis.com/books/v1/volumes?";
-const BASE_URL_USERS = "http://127.0.0.1:5000/users";
+const BASE_URL_USERS = "/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const flashContainer = document.getElementById("flashContainer");
 const paginateButtons = Array.from(document.getElementsByClassName("paginate"));

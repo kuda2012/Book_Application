@@ -3,9 +3,10 @@ const emailInput = document.getElementById("email");
 const newPasswordInput = document.getElementById("new_password");
 const passwordInput = document.getElementById("password");
 const passwordInputMatch = document.getElementById("new_password_match");
-const BASE_URL_USERNAMES = "http://127.0.0.1:5000/usernames/all";
-const BASE_URL_EMAILS = "http://127.0.0.1:5000/emails/all";
+const BASE_URL_USERNAMES = "/usernames/all";
+const BASE_URL_EMAILS = "/emails/all";
 const submitButton = document.getElementById("submitButton");
+const corsAnywhere = "https://cors-anywhere.herokuapp.com/";
 submitButton.disabled = false;
 
 if (usernameInput) {

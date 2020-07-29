@@ -6,20 +6,20 @@ const orderByInput = document.getElementById("order_by_filter");
 const cardsAndModal = $("#cardsAndModal");
 const BASE_URL_GOOGLE_BOOKS_API =
   "https://www.googleapis.com/books/v1/volumes?";
-const BASE_URL_USERS = "http://127.0.0.1:5000/users";
+const BASE_URL_USERS = "/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const submitButton = document.getElementById("submitButton");
 const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
 const userID = document
   .getElementById("userLoggedIn")
   .getAttribute("data-user-id");
-var resp_holder;
+var respHolder;
 var resp;
 
 window.addEventListener("DOMContentLoaded", async () => {
-  resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
+  resp = await axios.get(`/API/users/${userID}/books`);
 
-  resp_holder = resp;
+  respHolder = resp;
   numberOfPages = getNumberOfPages(resp.data);
   if (numberOfPages == 1) {
     for (let button of paginateButtons) {
@@ -51,7 +51,7 @@ searchForm.addEventListener("submit", async (evt) => {
   if (resp.data.length == 0) {
     alert("Could not find any results, try a different entry");
     searchInput.value = "";
-    resp = resp_holder;
+    resp = respHolder;
     return;
   }
 
@@ -66,7 +66,7 @@ searchForm.addEventListener("submit", async (evt) => {
   showSavedBooks.insertAfter($`#searchForm`);
 
   showSavedBooks.on("click", async () => {
-    resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
+    resp = await axios.get(`/API/users/${userID}/books`);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
     showSavedBooks.remove();
@@ -339,9 +339,9 @@ async function removeBookHTML(id) {
       resp.data.splice(i, 1);
     }
   }
-  for (let i = 0; i < resp_holder.data.length; i++) {
-    if (resp_holder.data[i].id == id) {
-      resp_holder.data.splice(i, 1);
+  for (let i = 0; i < respHolder.data.length; i++) {
+    if (respHolder.data[i].id == id) {
+      respHolder.data.splice(i, 1);
     }
   }
   numberOfPages = getNumberOfPages(resp.data);
@@ -351,10 +351,10 @@ async function removeBookHTML(id) {
   }
   loadList(resp.data);
 
-  if (resp.data.length == 0 && resp_holder.data.length == 0) {
+  if (resp.data.length == 0 && respHolder.data.length == 0) {
     window.location.href = "/";
   } else {
-    resp = await axios.get(`http://127.0.0.1:5000/API/users/${userID}/books`);
+    resp = await axios.get(`/API/users/${userID}/books`);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
   }

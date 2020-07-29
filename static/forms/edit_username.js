@@ -1,7 +1,7 @@
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const submitButton = document.getElementById("submitButton");
-const BASE_URL_USERNAMES = "http://127.0.0.1:5000/usernames/all";
+const BASE_URL_USERNAMES = "/usernames/all";
 submitButton.disabled = false;
 
 if (usernameInput) {
