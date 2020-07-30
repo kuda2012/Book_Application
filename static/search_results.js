@@ -55,11 +55,10 @@ searchForm.addEventListener("submit", async (evt) => {
   searchInput.value = "";
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
+  $target.animate({ scrollTop: $target.height() }, 3000);
   for (let button of paginateButtons) {
     button.setAttribute("style", "display=initial");
   }
-
-  $target.animate({ scrollTop: $target.height() }, 3000);
 });
 
 function pageResults(items) {
