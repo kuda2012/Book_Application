@@ -1,6 +1,6 @@
 ![image info](./BookCarousel.png)
 
-#Book Carousel
+# Book Carousel
 
 
  Book Carousel is your go-to website for learning more about the books you are curious about. 
@@ -8,14 +8,14 @@
 The site is deployed [here](https://book-carousel.herokuapp.com/).
 
 
-###Data
+### Data
 ##
 API Used:
 
  -  The [Google Books API](https://developers.google.com/books/docs/v1/using) was used to collect various information such as title, author, and genre for the books that are returned as the search results.	
 
 
-###Features
+### Features
 ##
 	
  - Ability to search for a book by title, author, or ISBN and request that the results be filtered by release date, genre, or E-book availability
@@ -25,7 +25,7 @@ API Used:
  - In the User's "Saved Books", User can further filter their saved books by searching for a book's author, title, or ISBN. User can also remove a book from their saved books.
 
 
-###User Flow
+### User Flow
 ##
 
   1. On the homepage, User will see a search bar that allows them to search for a book.
@@ -34,13 +34,13 @@ API Used:
   4. There will be links in the menu to allow user to create an account, login/logout, and view their saved books (if logged in)
 
 
-###Tech Stack
+### Tech Stack
 ##
 
  - Backend: Python, Flask, Postgres
  - Frontend: jQuery
  
 
-###Database Design
+### Database Design
 An overview of how the database is set up.
 ![image info](./database_design.png)
