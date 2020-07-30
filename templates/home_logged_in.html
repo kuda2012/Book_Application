@@ -16,12 +16,13 @@ content%}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="/users/{{user.id}}">Profile</a>
+        <a class="nav-link text-secondary" href="/users/{{user.id}}">Profile</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/users/{{user.id}}/books">My Saved Books</a>
+        <a class="nav-link text-secondary" href="/users/{{user.id}}/books"
+          >My Saved Books</a
+        >
       </li>
-      <!-- <li class="nav-item"></li> -->
     </ul>
     <a
       class="nav-link text-secondary"
@@ -73,21 +74,21 @@ content%}
   class="d-flex flex-row align-items-center justify-content-center mt-3"
 >
   <input
-    class="btn btn-secondary paginate"
+    class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="first"
     value="first"
     style="display: none;"
   />
   <input
-    class="btn btn-secondary paginate"
+    class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="previous"
     value="previous"
     style="display: none;"
   />
   <input
-    class="btn btn-secondary paginate"
+    class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="next"
     value="next"
@@ -95,7 +96,7 @@ content%}
   />
 
   <input
-    class="btn btn-secondary paginate"
+    class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="last"
     value="last"

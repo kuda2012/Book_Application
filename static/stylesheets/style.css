@@ -78,12 +78,10 @@
 
 .cards:hover {
   transform: scale(1.03);
-
   transition: transform 0.2s;
 }
 
-.cards:active,
-.btn:active {
+.cards:active {
   transform: scale(0.97);
   transition: transform 0.2s;
 }
