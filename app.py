@@ -140,7 +140,7 @@ def login():
             flash(f"Hello, {user.username}!", "success")
             return redirect("/")
 
-        flash("Invalid credentials.", 'danger')
+        flash("The username and password you entered did not match our records. Please double-check and try again.", 'danger')
         return render_template('login.html', form=form)
     else:
         return render_template('login.html', form=form)
@@ -307,7 +307,7 @@ def delete_user(user_id):
             flash(
                 f"Farewell, {username}. You're always welcome to come back", "success")
             return redirect("/")
-        flash("Invalid Password", "danger")
+        flash("Invalid Current Password", "danger")
         return redirect(f"users/{user_id}/delete_user")
     return render_template("user/delete_user.html", form=form, user=g.user)
 
