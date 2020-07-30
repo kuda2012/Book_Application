@@ -290,7 +290,7 @@ def edit_password(user_id):
 @app.route("/users/<user_id>/delete_user", methods=["GET", "POST"])
 @limiter.exempt
 def delete_user(user_id):
-    """Permanently delete ccount"""
+    """Permanently delete cacount"""
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
@@ -317,6 +317,7 @@ def delete_user(user_id):
 @app.route("/API/users/<user_id>/books", methods=["GET"])
 @limiter.exempt
 def show_books_api(user_id):
+    """Return all saved books"""
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
@@ -351,7 +352,7 @@ def filter_books(user_id):
 @app.route("/users/<user_id>/books", methods=["GET"])
 @limiter.exempt
 def show_books(user_id):
-    """Add book to saved books"""
+    """Send HTML frame for all saved books"""
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
@@ -470,7 +471,7 @@ def add_books(user_id):
 @app.route("/users/<user_id>/books/delete", methods=["POST"])
 @limiter.exempt
 def delete_book(user_id):
-    """Add book to saved books"""
+    """Delete book from saved books"""
     if not g.user:
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
