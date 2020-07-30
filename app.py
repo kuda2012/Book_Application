@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, g, redirect, flash, json
 import requests
-from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm, SearchSavedBooks
+from werkzeug.datastructures import MultiDict
+from forms import BookConditionsForm, UserForm, LoginForm, EditUsernameForm, EditUserPasswordForm, DeleteUserForm, SearchSavedBooks, UserEmailForm
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, User, connect_db, SavedBooks
@@ -8,10 +9,11 @@ import os
 import re
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+import wtforms_json
 
 
 app = Flask(__name__)
-# wtforms_json.init()
+wtforms_json.init()
 CURR_USER_KEY = "curr_user"
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -195,31 +197,17 @@ def check_username_availability():
 @app.route("/emails/all")
 def check_emails_availability():
     """Check if email is available"""
-    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
-
-    # Define a function for
-    # for validating an Email
-    def check(email):
-
-        # pass the regular expression
-        # and the string in search() method
-        if(re.search(regex, email)):
-            return True
-
-        else:
-            return False
-
     emails = [email[0] for email in db.session.query(User.email).all()]
-
-    if request.args["email"] in emails:
-        return "Email is already taken"
-    elif len(request.args["email"]) > 50:
-        return "Email is too long (maximum length = 50 characters)"
-    elif check(request.args["email"]):
-        return "Email is available"
+    data = MultiDict(mapping=request.args)
+    form = UserEmailForm(data, csrf_enabled=False)
+    if form.validate() and form.email.data not in emails:
+        return "Email Address is valid and available"
     else:
-        return "Email is not a valid email address"
+        if form.email.data in emails:
+            return "Email Address is already taken"
+        else:
+            return "Email Address is not valid"
+
 
 
 @app.route("/users/<user_id>/edit")

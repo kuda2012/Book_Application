@@ -37,6 +37,9 @@ class UserForm(FlaskForm):
     password = PasswordField("Password (Must be between 5 and 50 characters, inclusive)", validators=[InputRequired(), Length(min =5, max=50)])
     new_password_match = PasswordField("Enter Password, again", validators=[InputRequired(), Length(min=5)])
 
+class UserEmailForm(FlaskForm):
+    email = StringField("Email", validators=[Email(), InputRequired()])
+
 
 class LoginForm(FlaskForm):
 

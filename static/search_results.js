@@ -53,10 +53,6 @@ searchForm.addEventListener("submit", async (evt) => {
   }
 
   searchInput.value = "";
-  orderByInput.value = "";
-  previewInput.value = "";
-  categoryInput.value = "";
-
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
   for (let button of paginateButtons) {
@@ -220,22 +216,19 @@ function appendModal() {
 
 async function addCarousel(items) {
   const holder = $(`#containerFluid`);
-  var img;
-  var paragraph;
-
-  var averageRating = "";
-  var isbn13;
-  var amazonSearch;
-  var saveBook = "Save Book";
 
   const myBooks = await axios.get(`/API/users/${userID}/books`);
 
   for (let i = 0; i < items.length; i++) {
     var authors = "";
+    var img;
+    var paragraph;
+    var averageRating = "";
+    var isbn13;
+    var amazonSearch;
+    var saveBook = "Save Book";
     try {
-      if (items[i].volumeInfo.imageLinks) {
-        img = items[i].volumeInfo.imageLinks.smallThumbnail;
-      }
+      img = items[i].volumeInfo.imageLinks.smallThumbnail;
     } catch (err) {
       img =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";

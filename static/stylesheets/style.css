@@ -1,15 +1,15 @@
 .cards {
-  width: 150px;
+  max-width: 150px;
   display: flex;
   flex-direction: column;
 }
 .cardImgSize {
-  width: 150px;
-  height: 150px;
+  max-height: 200px;
+  max-width: 150px;
 }
 .modalImages {
-  width: 200px;
-  height: 200px;
+  max-width: 150px;
+  max-height: 200px;
 }
 .modalTitle {
   color: black;
