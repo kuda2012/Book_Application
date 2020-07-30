@@ -42,5 +42,6 @@ API Used:
  
 
 ### Database Design
+##
 An overview of how the database is set up.  
 ![image info](./database_design.png)
