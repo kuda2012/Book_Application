@@ -13,8 +13,8 @@ const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
 const userID = document
   .getElementById("userLoggedIn")
   .getAttribute("data-user-id");
-var respHolder;
-var resp;
+let respHolder;
+let resp;
 
 window.addEventListener("DOMContentLoaded", async () => {
   resp = await axios.get(`/API/users/${userID}/books`);

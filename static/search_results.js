@@ -12,12 +12,12 @@ const cardsContainer = document.getElementById("cardsContainer");
 const flashContainer = document.getElementById("flashContainer");
 const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
 const $target = $("html,body");
-var userID = "";
+let userID;
 if (document.getElementById("userLoggedIn")) {
   userID = document.getElementById("userLoggedIn").getAttribute("data-user-id");
 }
 
-var resp = null;
+let resp;
 
 searchForm.addEventListener("submit", async (evt) => {
   evt.preventDefault();
