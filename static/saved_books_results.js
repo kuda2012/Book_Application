@@ -188,16 +188,16 @@ function appendModal() {
 
 function addCarousel(items) {
   const holder = $(`#containerFluid`);
-  var img;
-  var paragraph;
-  var averageRating = "";
-  var isbn13;
-  var amazonSearch;
+  let img;
+  let paragraph;
+  let averageRating = "";
+  let isbn13;
+  let amazonSearch;
 
   for (let i = 0; i < items.length; i++) {
     img = items[i].thumbnail;
     paragraph = items[i].description;
-    var spaced_authors = "";
+    let spaced_authors = "";
     try {
       if (items[i].authors) {
         for (author of items[i].authors) {

@@ -11,8 +11,8 @@ const BASE_URL_USERS = "/users";
 const cardsContainer = document.getElementById("cardsContainer");
 const flashContainer = document.getElementById("flashContainer");
 const paginateButtons = Array.from(document.getElementsByClassName("paginate"));
-var $target = $("html,body");
-var userID;
+const $target = $("html,body");
+const userID;
 if (document.getElementById("userLoggedIn")) {
   userID = document.getElementById("userLoggedIn").getAttribute("data-user-id");
 }
@@ -219,13 +219,13 @@ async function addCarousel(items) {
   const myBooks = await axios.get(`/API/users/${userID}/books`);
 
   for (let i = 0; i < items.length; i++) {
-    var authors = "";
-    var img;
-    var paragraph;
-    var averageRating = "";
-    var isbn13;
-    var amazonSearch;
-    var saveBook = "Save Book";
+    let authors = "";
+    let img;
+    let paragraph;
+    let averageRating = "";
+    let isbn13;
+    let amazonSearch;
+    let saveBook = "Save Book";
     try {
       img = items[i].volumeInfo.imageLinks.smallThumbnail;
     } catch (err) {
