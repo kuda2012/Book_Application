@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{%block title%}{%endblock%}</title>
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <meta
-      property="og:image"
-      content="//raw.githubusercontent.com/kuda2012/Book-Carousel/master/BookCarousel.png"
-    />
     <link
       rel="icon"
       href="https://raw.githubusercontent.com/kuda2012/Book-Carousel/master/BookCarousel.png"
@@ -33,7 +29,11 @@
   </head>
   <body>
     {% block content %} {% endblock %}
-
+    <img
+      src="https://raw.githubusercontent.com/kuda2012/Book-Carousel/master/BookCarousel.png"
+      alt="bookCarousel"
+      style="display: none;"
+    />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
