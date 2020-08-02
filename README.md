@@ -1,4 +1,4 @@
-![image info](./BookCarousel.jpg)
+![image info](./BookIcon.jpg)
 
 # Book Carousel
 
