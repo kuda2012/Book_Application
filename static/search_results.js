@@ -250,6 +250,8 @@ async function addCarousel(items) {
     try {
       if (items[i].volumeInfo.industryIdentifiers) {
         isbn13 = `${items[i].volumeInfo.industryIdentifiers[1].identifier}`;
+      } else {
+        isbn13 = "N/A";
       }
     } catch (err) {
       isbn13 = "N/A";
