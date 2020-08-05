@@ -222,7 +222,8 @@ async function addCarousel(items) {
     let authors = "";
     let img;
     let paragraph;
-    let averageRating = "";
+    let averageRating;
+    let starRating;
     let isbn13;
     let amazonSearch;
     let saveBook = "Save Book";
@@ -240,6 +241,7 @@ async function addCarousel(items) {
     try {
       if (items[i].volumeInfo.averageRating) {
         averageRating = `${items[i].volumeInfo.averageRating}/5`;
+        starRating = items[i].volumeInfo.averageRating;
       } else {
         averageRating = "N/A";
       }
@@ -323,10 +325,14 @@ async function addCarousel(items) {
                         </div>
                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-12 text-center">
-                                <div>Average Rating: ${averageRating}
-                                </div>
+                                <div>Average Rating: ${averageRating}</div>
                             </div>
                         </div>
+                         <div class = "row justify-content-center carousel-row">
+                            <div class = "d-flex justify-content-center col-12 ">
+                                <p><span class="stars" id = ${i}></span></p>
+                            </div>
+                        </div>                                          
                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-12 text-center">
                                 <div>ISBN-13: ${isbn13}
@@ -391,10 +397,14 @@ async function addCarousel(items) {
                         </div>
                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-12 text-center">
-                                <div> Average Rating: ${averageRating}
-                                </div>
+                                <div>Average Rating: ${averageRating}</div>
                             </div>
                         </div>
+                         <div class = "row justify-content-center carousel-row">
+                            <div class = "d-flex justify-content-center col-12 ">
+                                <p><span class="stars" id = ${i}></span></p>
+                            </div>
+                        </div>   
                        <div class = "row justify-content-center carousel-row">
                             <div class = "col-12 text-center">
                                 <div> ISBN-13: ${isbn13}
@@ -420,6 +430,23 @@ async function addCarousel(items) {
 `);
 
       holder.append(infoLoggedOut);
+      var starWidth = 40;
+
+      $.fn.stars = function () {
+        return $(this).each(function () {
+          $(this).html(
+            $("<span />").width(
+              Math.max(0, Math.min(5, parseFloat($(this).html()))) * starWidth
+            )
+          );
+        });
+      };
+      if (averageRating != "N/A") {
+        document.getElementById(i).innerText = starRating;
+        $(`#${i}`).stars();
+      } else {
+        $(`#${i}`).parent().remove();
+      }
     }
     if (document.getElementById("userLoggedIn")) {
       saveBooks(i);

@@ -191,6 +191,7 @@ function addCarousel(items) {
   let img;
   let paragraph;
   let averageRating = "";
+  let starRating;
   let isbn13;
   let amazonSearch;
 
@@ -224,6 +225,7 @@ function addCarousel(items) {
     try {
       if (items[i].rating != "N/A") {
         averageRating = `${items[i].rating}/5`;
+        starRating = items[i].rating;
       } else {
         averageRating = "N/A";
       }
@@ -274,12 +276,16 @@ function addCarousel(items) {
                                   <p class = "modalParagraph">${paragraph}</p>
                             </div>
                         </div>
-                        <div class = "row  carousel-row">
+                      <div class = "row justify-content-center carousel-row">
                             <div class = "col-12 text-center">
-                                <div>Average Rating: ${averageRating}
-                                </div>
+                                <div>Average Rating: ${averageRating}</div>
                             </div>
                         </div>
+                         <div class = "row justify-content-center carousel-row">
+                            <div class = "d-flex justify-content-center col-12 ">
+                                <p><span class="stars" id = ${i}></span></p>
+                            </div>
+                        </div>  
                        <div class = "row  carousel-row">
                             <div class = "col-12 text-center">
                                 <div>ISBN-13: ${isbn13}
@@ -306,6 +312,23 @@ function addCarousel(items) {
                     </div>
 `);
       holder.append(infoLoggedIn);
+      var starWidth = 40;
+
+      $.fn.stars = function () {
+        return $(this).each(function () {
+          $(this).html(
+            $("<span />").width(
+              Math.max(0, Math.min(5, parseFloat($(this).html()))) * starWidth
+            )
+          );
+        });
+      };
+      if (averageRating != "N/A") {
+        document.getElementById(i).innerText = starRating;
+        $(`#${i}`).stars();
+      } else {
+        $(`#${i}`).parent().remove();
+      }
     }
     if (document.getElementById("userLoggedIn")) {
       removeBooks(i);
