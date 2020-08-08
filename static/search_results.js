@@ -52,7 +52,6 @@ searchForm.addEventListener("submit", async (evt) => {
     return;
   }
 
-  searchInput.value = "";
   numberOfPages = getNumberOfPages(resp.data.items);
   firstPage(resp.data.items);
   $target.animate({ scrollTop: $target.height() }, 3000);

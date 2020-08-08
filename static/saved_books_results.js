@@ -357,6 +357,9 @@ async function removeBookHTML(id) {
   const bookCard = document.getElementById(id);
   bookCard.click();
   bookCard.remove();
+  if (document.getElementById("showSavedBooks")) {
+    document.getElementById("showSavedBooks").remove();
+  }
   for (let i = 0; i < resp.data.length; i++) {
     if (resp.data[i].id == id) {
       resp.data.splice(i, 1);
