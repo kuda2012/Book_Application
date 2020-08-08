@@ -99,3 +99,6 @@ span.stars span {
   background-position: 0 0;
   background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star.svg);
 }
+.labels {
+  font-size: large;
+}

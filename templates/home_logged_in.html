@@ -48,20 +48,20 @@ content%}
     id="searchForm"
     class="d-flex flex-column align-items-center"
   >
-    <h6 class="text-center">Search a book.</h6>
-    <h6 class="text-center">Save a book.</h6>
-    <h6 class="text-center">Buy a book.</h6>
+    <h5 class="text-center">Search a book.</h5>
+    <h5 class="text-center">Save a book.</h5>
+    <h5 class="text-center">Buy a book.</h5>
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
     <div class="form-group align-self-start">
-      {{field.label}} {{field(maxLength = "100")}} {%if field.errors%}{%for
-      error in field.errors%}
+      {{field.label(class_='labels')}} {{field(maxLength = "100")}} {%if
+      field.errors%}{%for error in field.errors%}
       <div class="formError bg-warning">{{error}}</div>
       {%endfor%}{%endif%}
     </div>
     {%endfor%}
     <button class="btn btn-primary btn-md align-self-center">
-      Submit
+      Search
     </button>
   </form>
 </div>
