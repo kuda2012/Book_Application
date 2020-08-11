@@ -20,7 +20,7 @@ API Used:
 
 - Ability to search for a book by title, author, or ISBN and request that the results be filtered by release date, genre, or E-book availability
 - User can create, edit, or delete their account (account creation not necessary to use app)
-- A book-card from the search results shows the User a given book's title, description, author, ISBN13, and rating and has options to purchase or learn more about the book
+- Book Cards: show a  given book's title, description, author, ISBN13, and rating and has options to purchase or learn more about the book
 - User can save a given book to "Saved Books" (Must be logged in)
 - In the User's "Saved Books", User can further filter their saved books by searching for a book's author, title, or ISBN. User can also remove a book from their saved books.
 
