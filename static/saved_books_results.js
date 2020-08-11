@@ -312,7 +312,7 @@ function addCarousel(items) {
                     </div>
 `);
       holder.append(infoLoggedIn);
-      var starWidth = 40;
+      let starWidth = 40;
 
       $.fn.stars = function () {
         return $(this).each(function () {

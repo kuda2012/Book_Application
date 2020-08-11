@@ -429,24 +429,25 @@ async function addCarousel(items) {
 `);
 
       holder.append(infoLoggedOut);
-      var starWidth = 40;
-
-      $.fn.stars = function () {
-        return $(this).each(function () {
-          $(this).html(
-            $("<span />").width(
-              Math.max(0, Math.min(5, parseFloat($(this).html()))) * starWidth
-            )
-          );
-        });
-      };
-      if (averageRating != "N/A") {
-        document.getElementById(i).innerText = starRating;
-        $(`#${i}`).stars();
-      } else {
-        $(`#${i}`).parent().remove();
-      }
     }
+    let starWidth = 40;
+
+    $.fn.stars = function () {
+      return $(this).each(function () {
+        $(this).html(
+          $("<span />").width(
+            Math.max(0, Math.min(5, parseFloat($(this).html()))) * starWidth
+          )
+        );
+      });
+    };
+    if (averageRating != "N/A") {
+      document.getElementById(i).innerText = starRating;
+      $(`#${i}`).stars();
+    } else {
+      $(`#${i}`).parent().remove();
+    }
+
     if (document.getElementById("userLoggedIn")) {
       saveBooks(i);
     }
