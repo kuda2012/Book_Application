@@ -37,7 +37,7 @@ API Used:
 
 ##
 
-- Backend: Python, Flask, Postgres
+- Backend: Python, Flask, Postgres, SQLAlchemy
 - Frontend: jQuery
 
 ### Database Design
