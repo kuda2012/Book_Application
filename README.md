@@ -29,9 +29,9 @@ API Used:
 ##
 
 1. On the homepage, User will see a search bar that allows them to search for a book.
-2. Pages of book results will be returned, and user can click on a given book-card and discover more information about the book
+2. Pages of book results will be returned, and User can click on a given book card and discover more information about the book
 3. User can click to save book to their "Saved Books" and then click to be directed to their saved books.
-4. There will be links in the menu to allow user to create an account, login/logout, and view their saved books (if logged in)
+4. There are links in the navbar to allow User to create an account, login/logout, and view their saved books
 
 ### Tech Stack
 
