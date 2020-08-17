@@ -50,12 +50,10 @@ searchForm.addEventListener("submit", async (evt) => {
   });
   if (resp.data.length == 0) {
     alert("Could not find any results, try a different entry");
-    searchInput.value = "";
     resp = respHolder;
     return;
   }
 
-  searchInput.value = "";
   numberOfPages = getNumberOfPages(resp.data);
   firstPage(resp.data);
   if (document.getElementById("showSavedBooks")) {
@@ -331,12 +329,12 @@ function addCarousel(items) {
       }
     }
     if (document.getElementById("userLoggedIn")) {
-      removeBooks(i);
+      removeBook(i);
     }
   }
 }
 
-function removeBooks(i) {
+function removeBook(i) {
   const deleteBook = document.getElementById(`saveBook${i}`);
   deleteBook.addEventListener("click", async function () {
     if (deleteBook.innerText == "Book Deleted") {
@@ -357,9 +355,6 @@ async function removeBookHTML(id) {
   const bookCard = document.getElementById(id);
   bookCard.click();
   bookCard.remove();
-  if (document.getElementById("showSavedBooks")) {
-    document.getElementById("showSavedBooks").remove();
-  }
   for (let i = 0; i < resp.data.length; i++) {
     if (resp.data[i].id == id) {
       resp.data.splice(i, 1);
@@ -376,10 +371,18 @@ async function removeBookHTML(id) {
     currentPage = numberOfPages;
   }
   loadList(resp.data);
-
   if (resp.data.length == 0 && respHolder.data.length == 0) {
     window.location.href = "/";
+  } else if (
+    document.getElementById("showSavedBooks") &&
+    resp.data.length != 0
+  ) {
+    numberOfPages = getNumberOfPages(resp.data);
+    firstPage(resp.data);
   } else {
+    if (document.getElementById("showSavedBooks")) {
+      document.getElementById("showSavedBooks").remove();
+    }
     resp = await axios.get(`/API/users/${userID}/books`);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);
