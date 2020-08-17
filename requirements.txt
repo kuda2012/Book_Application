@@ -20,7 +20,6 @@ Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
 gunicorn==20.0.4
 idna==2.10
-zope.interface==5.1.0
 ipython==7.0.1
 ipython-genutils==0.2.0
 itsdangerous==0.24
@@ -53,4 +52,4 @@ wcwidth==0.1.7
 Werkzeug==0.14.1
 WTForms==2.2.1
 WTForms-JSON==0.3.3
-
+zope.interface==5.1.0
