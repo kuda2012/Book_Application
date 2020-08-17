@@ -370,19 +370,16 @@ async function removeBookHTML(id) {
   if (currentPage > numberOfPages) {
     currentPage = numberOfPages;
   }
-  loadList(resp.data);
+  let currentPagesBooks = loadList(resp.data);
   if (resp.data.length == 0 && respHolder.data.length == 0) {
     window.location.href = "/";
-  } else if (
-    document.getElementById("showSavedBooks") &&
-    resp.data.length != 0
-  ) {
+  } else if (currentPagesBooks.length != 0) {
     numberOfPages = getNumberOfPages(resp.data);
-    firstPage(resp.data);
   } else {
     if (document.getElementById("showSavedBooks")) {
       document.getElementById("showSavedBooks").remove();
     }
+    searchInput.value = "";
     resp = await axios.get(`/API/users/${userID}/books`);
     numberOfPages = getNumberOfPages(resp.data);
     firstPage(resp.data);

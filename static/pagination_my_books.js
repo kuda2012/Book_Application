@@ -60,6 +60,7 @@ function loadList(items) {
   pageResults(items.slice(begin, end));
 
   check();
+  return items.slice(begin, end);
 }
 function check() {
   document.getElementById("next").disabled =
