@@ -102,3 +102,12 @@ span.stars span {
 .labels {
   font-size: large;
 }
+#firstSearchLabel {
+  color: black;
+  text-shadow: 1px 0 black;
+  font-weight: 800;
+}
+
+#subtitles {
+  margin: 10px 0;
+}

@@ -38,9 +38,12 @@ content%}
     id="searchForm"
     class="d-flex flex-column align-items-center"
   >
-    <h5 class="text-center">Search a book.</h5>
-    <h5 class="text-center">Save a book.</h5>
-    <h5 class="text-center">Buy a book.</h5>
+    <div id="subtitles">
+      <h5 class="text-center">Search a book.</h5>
+      <h5 class="text-center">Save a book.</h5>
+      <h5 class="text-center">Buy a book.</h5>
+    </div>
+
     {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
     'hidden'%}
     <div class="form-group align-self-start">
@@ -50,9 +53,7 @@ content%}
       {%endfor%}{%endif%}
     </div>
     {%endfor%}
-    <button class="btn btn-primary btn-md">
-      Search
-    </button>
+    <button class="btn btn-primary btn-md">Search</button>
   </form>
 </div>
 
@@ -62,28 +63,28 @@ content%}
 <div
   id="paginationButtons"
   class="d-flex flex-row align-items-center justify-content-center mt-3"
-  style="display: none;"
+  style="display: none"
 >
   <input
     class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="first"
     value="first"
-    style="display: none;"
+    style="display: none"
   />
   <input
     class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="previous"
     value="previous"
-    style="display: none;"
+    style="display: none"
   />
   <input
     class="btn btn-secondary paginate bg-dark text-light"
     type="button"
     id="next"
     value="next"
-    style="display: none;"
+    style="display: none"
   />
 
   <input
@@ -91,7 +92,7 @@ content%}
     type="button"
     id="last"
     value="last"
-    style="display: none;"
+    style="display: none"
   />
 </div>
 <script src="/static/search_results.js"></script>
