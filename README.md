@@ -12,14 +12,14 @@ The site is deployed [here](https://book-carousel.herokuapp.com/).
 
 API Used:
 
-- The [Google Books API](https://developers.google.com/books/docs/v1/using) was used to collect various information such as title, author, and genre for the books that are returned as the search results.
+- The [Google Books API](https://developers.google.com/books/docs/v1/using) is used to display information such as the title, author, and genre for the books that are returned as the search results.
 
 ### Features
 
 ##
 
-- Ability to search for a book by title, author, or ISBN and filter the results by release date, genre, or E-book availability  
-- Book Cards: show a  given book's title, description, author, ISBN13, and rating and has options to purchase or learn more about the book
+- Ability to search for a book by title, author, or ISBN and filter the results by release date, genre, or E-book availability
+- Book Cards: show a given book's title, description, author, ISBN13, and rating and has options to purchase or learn more about the book
 - User can save a given book to "Saved Books" (Must be logged in)
 - In the User's "Saved Books", User can further filter their saved books by searching for a book's author, title, or ISBN. User can also remove a book from their saved books.
 - User can create, edit, or delete their account (account creation not necessary to use app)
