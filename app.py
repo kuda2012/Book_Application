@@ -17,13 +17,15 @@ wtforms_json.init()
 CURR_USER_KEY = "curr_user"
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', "postgres://postgres@127.0.0.1:5432/book_db"))
+test_db = None
+# test_db = "postgres://postgres@127.0.0.1:5432/book_db_test"
+app.config['SQLALCHEMY_DATABASE_URI'] = (os.environ.get('DATABASE_URL', test_db or "postgres://postgres@127.0.0.1:5432/book_db"))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "secret")
+
 
 toolbar = DebugToolbarExtension(app)
 
@@ -95,8 +97,7 @@ def signup():
     If the there already is a user with that username: flash message
     and re-present form.
     """
-
-    form = UserForm()
+    form = UserForm(csrf_enabled=True if not test_db else False)
     if g.user:
         return redirect(f"/")
 
@@ -130,7 +131,7 @@ def login():
     """Handle user login."""
     if g.user:
         return redirect(f"/")
-    form = LoginForm()
+    form = LoginForm(csrf_enabled=True if not test_db else False)
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
@@ -231,7 +232,7 @@ def edit_username(user_id):
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
-    form = EditUsernameForm()
+    form = EditUsernameForm(csrf_enabled=True if not test_db else False)
 
     if form.validate_on_submit():
         user = User.authenticate(g.user.username,
@@ -263,20 +264,14 @@ def edit_password(user_id):
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
-    form = EditUserPasswordForm()
+    form = EditUserPasswordForm(csrf_enabled=True if not test_db else False)
     if form.validate_on_submit():
         if (form.new_password.data != form.new_password_match.data):
             flash("Passwords did not match", 'danger')
             return render_template('user/edit_password.html', form=form, user=g.user)
         user = User.authenticate(g.user.username,
                                  form.password.data)
-
         if user:
-
-            if form.new_password.data != form.new_password_match.data:
-                flash("New Password inputs did not match, try again", "danger")
-                return redirect(f"users/{user_id}/edit/password")
-            else:
                 user = User.change_password(user, form.new_password.data)
                 flash("Password Changed", "success")
                 return redirect("/")
@@ -295,15 +290,15 @@ def delete_user(user_id):
         flash("Must be logged in to access this", 'danger')
         return redirect("/")
 
-    form = DeleteUserForm()
-
+    form = DeleteUserForm(csrf_enabled=True if not test_db else False)
     if form.validate_on_submit():
-        user = User.authenticate(g.user.username,
+        user = User.authenticate(g.user.username or form.username.data,
                                  form.delete_user.data)
         if user:
             db.session.delete(user)
             username = user.username
             db.session.commit()
+            do_logout()
             flash(
                 f"Farewell, {username}. You're always welcome to come back", "success")
             return redirect("/")

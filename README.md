@@ -46,3 +46,16 @@ API Used:
 
 An overview of how the database is set up.  
 ![image info](./database_design.png)
+
+### Tests
+
+##
+
+Tests are currently only compatible in WSL
+
+Follow Along to get them running: 
+
+1. Remove the # at the beginning of line 21 in the app.py
+2. In your terminal, run this command (without the quotes) python3 -m unittest tests.py
+3. Your terminal may or may not tell you to remove the 3 in python3 in the command you just ran depending on what version of python you are running.
+4. Optional - Inspect all of the tests in test.py to see what is being tested.

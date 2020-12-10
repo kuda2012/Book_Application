@@ -98,15 +98,15 @@ class SavedBooks(db.Model):
         
     __tablename__ = 'saved_books'
         
-    id = db.Column(db.String, primary_key=True, default = "The ID of this book is not available")
-    isbn13 = db.Column(db.String, index=True, default = "N/A")
-    title = db.Column(db.String, index=True, default = "The title of this book is not available")
-    rating = db.Column(db.String, default="N/A")
-    info = db.Column(db.String, default="N/A")
-    authors = db.Column((ARRAY(db.String)), default=["N/A"])
-    authors_string = db.Column(db.String, default = "N/A")
-    description = db.Column(db.String, default = "A description of this book is not available")
-    thumbnail = db.Column(db.String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
+    id = db.Column(db.Text, primary_key=True, default = "The ID of this book is not available")
+    isbn13 = db.Column(db.Text, index=True, default = "N/A")
+    title = db.Column(db.Text, index=True, default = "The title of this book is not available")
+    rating = db.Column(db.Text, default="N/A")
+    info = db.Column(db.Text, default="N/A")
+    authors = db.Column((ARRAY(db.Text)), default=["N/A"])
+    authors_string = db.Column(db.Text, default = "N/A")
+    description = db.Column(db.Text, default = "A description of this book is not available")
+    thumbnail = db.Column(db.Text, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
