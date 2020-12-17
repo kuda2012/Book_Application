@@ -51,11 +51,11 @@ An overview of how the database is set up.
 
 ##
 
-Tests are currently only compatible in WSL/Linux
+Make sure to activate your virtual environment before running test
 
-Follow Along to get them running: 
+Follow Along to get them running:
 
 1. Remove the "#" at the beginning of line 21 in the app.py
-2. In your terminal, run this command   python3 -m unittest tests.py
+2. In your terminal, run this command python3 -m unittest tests.py
 3. Your terminal may or may not tell you to remove the 3 in python3 in the command you just ran depending on what version of python you are running.
 4. Optional - Inspect all of the tests in tests.py to see what is being tested.
