@@ -14,6 +14,7 @@ import wtforms_json
 
 app = Flask(__name__)
 wtforms_json.init()
+
 CURR_USER_KEY = "curr_user"
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
