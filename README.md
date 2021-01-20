@@ -2,7 +2,7 @@
 
 # Book Carousel
 
-Book Carousel is your go-to book comparison shopping website.
+Book Carousel is your go-to book comparison website.
 
 The site is deployed [here](https://book-carousel.herokuapp.com/).
 
