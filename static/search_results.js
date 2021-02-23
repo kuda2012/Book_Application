@@ -348,7 +348,7 @@ async function addCarousel(items) {
                                     <button data-save-book=${items[i].id} data-user-id =${userID}  id = "saveBook${i}" class = "btn btn-success btn-sm saveBooks">${saveBook}</button>
                             </div>
                             <div class = "col-3">
-                            <FORM action="http://www.amazon.com/exec/obidos/external-search"
+                            <FORM action="https://www.amazon.com/exec/obidos/external-search"
                                   method="get" target="_blank">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
                                 <button  class ="btn btn-warning btn-sm" >Amazon Search</button>
@@ -417,7 +417,7 @@ async function addCarousel(items) {
                                   </a>
                             </div>
                             <div class = "col-3">
-                            <FORM action="http://www.amazon.com/exec/obidos/external-search"
+                            <FORM action="https://www.amazon.com/exec/obidos/external-search"
                                   method="get" target="_blank">
                                 <INPUT type="hidden"  name="keyword" size="10" value='${amazonSearch}'>
                                 <button  class ="btn btn-warning btn-sm" >Amazon Search</button>
